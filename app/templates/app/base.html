@@ -17,6 +17,25 @@
         <script src="{%static 'app/js/owl.carousel.min.js'%}"></script>
         <script src="{%static 'app/js/all.min.js'%}"></script>
         <script src="{%static 'app/js/myscript.js'%}"></script>
+        <script src="{%static 'app/js/cart.js'%}"></script>
+        <script type="text/javascript">
+          var user = '{{request.user}}'
+          function  getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== ''){
+              const cookies = document.cookie.split(';');
+              for (let i=0;i<cookies.length;i++){
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')){
+                  cookieValue = decodeURIComponent(cookie.substring(name.length+1));
+                  break;
+                }
+              }
+            }
+            return cookieValue;
+          }
+          const csrftoken = getCookie('csrftoken')
+        </script>
         <title>Web ban hang online</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,7 +45,7 @@
         <!--Header-->
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#">
+              <a class="navbar-brand" href="{% url 'home' %}">
                 <img src="{%static 'app/images/Neel.png' %}" width="50" height="50"/>
               </a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-tar get="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +54,7 @@
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Trang chủ</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Trang chủ</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="#">Giới thiệu</a>
@@ -67,12 +86,12 @@
                   </a>
                   <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="#">Trang cá nhân</a></li>
-                    <li><a class="dropdown-item" href="#">Giỏ hàng</a></li>
+                    <li><a class="dropdown-item" href="{% url 'cart' %}">Đơn hàng</a></li>
                     <li><a class="dropdown-item" href="#">Thoát</a></li>
                   </ul>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Giỏ hàng</a>
+                  <a class="nav-link" href="{% url 'cart' %}">Giỏ hàng</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="#">Đăng nhập</a>
@@ -88,9 +107,12 @@
         {% block main-content %}{% endblock main-content %}
         <!--giao diện cart-->
         {% block cart_content %}{% endblock cart_content %}
+        <!--giao diện checkout-->
+        {% block content_checkout %}{% endblock content_checkout %}
         <!--footer-->
         <footer class="container--fluid bg-success text-center fixed-bottom p-2 mt-5">
             coppy 222
         </footer>
+        <script src="{%static 'app/js/cart.js'%}"></script>
     </body>
 </html>
