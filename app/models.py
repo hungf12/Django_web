@@ -1,18 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.utils import timezone
 # change forms register django
 class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username','email','first_name','last_name','password1','password2']
 # Create your models here.
-class Customer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=False)
-    name = models.CharField(max_length=256, null=True)
-    email = models.CharField(max_length=256, null=True)
-    def __str__(self):
-        return self.name
 
 class Product(models.Model):
     name = models.CharField(max_length=256, null=True)
@@ -30,8 +25,8 @@ class Product(models.Model):
         return url
 
 class Order(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
-    date_order = models.DateTimeField(auto_created=True)
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    date_order = models.DateTimeField(null=False, blank=False, default=timezone.now)
     complete = models.BooleanField(default=False, null= True, blank=False)
     transaction_id = models.CharField(max_length=256,null=True)
     def __str__(self):
@@ -56,7 +51,7 @@ class OrderItem(models.Model):
         total = self.product.price * self.quantity
         return total
 class ShippingAddress(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
+    customer = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     order = models.ForeignKey(Order,on_delete=models.SET_NULL, blank=True, null=True)
     address = models.CharField(max_length=256, null=True)
     city = models.CharField(max_length=256, null=True)
