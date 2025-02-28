@@ -1,0 +1,43 @@
+{% extends 'app/base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        {% block register %}
+        <h2>Kết quả trả về cho các dòng "{{ query }}"</h2>
+
+        {% if results %}
+        <div class="row" style="width: 100%">
+            {%for item in results %}
+              <div class="col-lg-3">
+                  <img class="thumbnail" src="{{item.ImageURL}}">
+                  <div class="box-element product">
+                      <h6><strong>{{item.name}}</strong></h6>
+                      <hr>
+                      <button data-product="{{item.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to cart</button>
+                      <a class="btn btn-outline-success" href="#">View</a>
+                      <h3 style="display: line-block; float: right"><strong>${{item.price| floatformat:2}}</strong></h3>
+          
+                  </div>
+              </div>
+              {% endfor %}
+          </div>
+        {% else %}
+            <p>No results found.</p>
+        {% endif %}
+        
+        {% endblock register%}
+    </body>
+</html>

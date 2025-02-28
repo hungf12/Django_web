@@ -57,35 +57,36 @@
                     <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Trang chủ</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Giới thiệu</a>
+                    <a class="nav-link" aria-current="page" href="{% url 'intro' %}">Giới thiệu</a>
                   </li>
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Sản phẩm
                     </a>
                     <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="#">Sữa</a></li>
-                      <li><a class="dropdown-item" href="#">Quần áo</a></li>
-                      <li><a class="dropdown-item" href="#">Giày dép</a></li>
-                      <li><a class="dropdown-item" href="#">Đồ gia dụng</a></li>
-                    </ul>
+                      <li><a class="dropdown-item" href="{% url 'list_product' %}?attribute=Iphone">Iphone</a></li>
+                      <li><a class="dropdown-item" href="{% url 'list_product' %}?attribute=SamSung">Samsung</a></li>
+                      <li><a class="dropdown-item" href="{% url 'list_product' %}?attribute=Nokia">Nokia</a></li>
+                      <li><a class="dropdown-item" href="{% url 'list_product' %}?attribute=Accessories">Phụ kiện</a></li>
+                  </ul>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="#">Liên hệ</a>
                   </li>
                 </ul>
-                <form class="d-flex" role="search">
-                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <form class="d-flex" role="search" method="GET" action="{%url 'search'%}">
+                  {%csrf_token%}
+                  <input class="form-control me-2" type="text" placeholder="Search" aria-label="Search" name="q">
                   <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
-              </div>
+              </div> 
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <div class="form-inline my-2 my-lg-0">
                   <span>hi! {{request.user}}</span>
                   <span><a href="{%url 'logout'%}">Logout</a></span>
                 </div>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Đăng nhập</a>
+                  <a class="nav-link" href="{%url 'login'%}">Đăng nhập</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="#">Đăng ký</a>
@@ -107,7 +108,13 @@
         <!--giao diện register-->
         {% block register %}{% endblock register %}
         <!--giao diện login-->
-        <!-- {% block login %}{% endblock login %} -->
+        {% block login %}{% endblock login %}
+        <!--giao diện search-->
+        {% block search %}{% endblock search %}
+        <!--giao diện giới thiệu-->
+        {% block intro %}{% endblock intro %}
+        <!--giao diện hiển thị list sản phẩm lựa chọn trên dropdown-->
+        {% block list_product %}{% endblock list_product %}
         <!--footer-->
         <footer class="container--fluid bg-success text-center fixed-bottom p-2 mt-5">
             coppy 222

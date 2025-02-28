@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,JsonResponse
 from .models import *
+from django.db.models import Q
 import json
 from django .contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
@@ -12,6 +13,7 @@ def register(request):
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
+            return redirect('login')
     context ={'form':form}
     return render(request, 'app/register.html',context)
 def loginpage(request):
@@ -26,7 +28,7 @@ def loginpage(request):
             login(request,user)
             return redirect('home')
         else:
-            messages.info(request, 'user or password not correct!')
+            messages.error(request, 'user or password not correct!')
     context ={}
     return render(request, 'app/login.html',context)
 def logoutpage(request):
@@ -93,3 +95,29 @@ def updateItem(request):
     # #     'quantity': quantity,
     # #     'cart_total':cart_total
     # },safe=False)
+
+def search_items(request):
+    # if request.method == "POST":
+    #     searched = request.POST["searched"]
+    #     keys = Product.objects.filter(name__contains = searched)
+    # return render(request, "app/search.html", {"searched": searched, "keys": keys})
+    query = request.GET.get('q')
+    result = []
+
+    if query:
+        result = Product.objects.filter(Q(name__icontains=query))[:1]
+    else:
+        result = Product.objects.all()
+
+    return render(request, "app/search.html", {"results": result, "query": query})
+
+def intro(request):
+    return render(request, "app/intro.html")
+
+def list_product(request):
+    attribute = request.GET.get('attribute','all')
+    if attribute == "all":
+        products = Product.objects.all()
+    else:
+        products = Product.objects.filter(attribute=attribute)
+    return render(request,'app/list_product.html',{'products':products})
