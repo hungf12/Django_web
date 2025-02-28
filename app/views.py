@@ -121,3 +121,6 @@ def list_product(request):
     else:
         products = Product.objects.filter(attribute=attribute)
     return render(request,'app/list_product.html',{'products':products})
+
+def contract(request):
+    return render(request, 'app/contract.html')
