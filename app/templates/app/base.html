@@ -61,8 +61,18 @@
                   <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Trang chủ</a>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{% url 'intro' %}">Giới thiệu</a>
+                  <!-- <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'intro' %}">Chính sách</a>
+                  </li> -->
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Chính sách
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="{% url 'intro' %}">Bảo hành Iphone</a></li>
+                      <li><a class="dropdown-item" href="#">Bảo Hành amsung</a></li>
+                      <li><a class="dropdown-item" href="#">Bảo hành Phụ kiện</a></li>
+                  </ul>
                   </li>
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -91,16 +101,26 @@
                   <span>hi! {{request.user}}</span>
                   <span><a href="{%url 'logout'%}">Logout</a></span>
                   {%else%}
-                  <span><a href="{%url 'login'%}">Login</a></span>
+                  <!-- <span><a href="{%url 'login'%}">Login</a></span> -->
                   {%endif%}
                   <!-- <span>hi! {{request.user}}</span>
                   <span><a href="{%url 'logout'%}">Logout</a></span> -->
                 </div>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                   <a class="nav-link" href="{%url 'login'%}">Đăng nhập</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="#">Đăng ký</a>
+                </li> -->
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Xem thêm
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Trang cá nhân</a></li>
+                    <li><a class="dropdown-item" href="{%url 'login'%}">Đăng nhập</a></li>
+                    <li><a class="dropdown-item" href="{%url 'register'%}">Đăng ký</a></li>
+                </ul>
                 </li>
               </ul>
               <div class="form-inline my-2 my-lg-0">
