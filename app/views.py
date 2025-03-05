@@ -123,4 +123,6 @@ def list_product(request):
     return render(request,'app/list_product.html',{'products':products})
 
 def contract(request):
-    return render(request, 'app/contract.html')
+    # Location.objects.create(location_name="default", latitude=10.762622, longitude=106.660172)
+    locations = Location.objects.all()
+    return render(request, 'app/contract.html',{'locations':locations})

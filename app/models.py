@@ -59,4 +59,12 @@ class ShippingAddress(models.Model):
     phonenumber = models.CharField(max_length=256, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return self.address     
+        return self.address    
+
+
+class Location(models.Model):
+    location_name =models.CharField(max_length= 256)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    def __str__(self):
+        return self.location_name
