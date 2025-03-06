@@ -1,0 +1,28 @@
+{% extends 'app/base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        {% block product_detail %}
+        <h1>{{ product.name }}</h1>
+        <p>{{ product.description }}</p>
+        <p>Giá: {{ product.price }} VND</p>
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="300">
+        {% endif %}
+        
+        {% endblock product_detail %}
+    </body>
+</html>

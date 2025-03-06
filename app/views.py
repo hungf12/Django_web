@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse,JsonResponse
 from .models import *
 from django.db.models import Q
@@ -126,3 +126,7 @@ def contract(request):
     # Location.objects.create(location_name="default", latitude=10.762622, longitude=106.660172)
     locations = Location.objects.all()
     return render(request, 'app/contract.html',{'locations':locations})
+
+def product_detail(request, product_id):
+    product = get_object_or_404(Product,id = product_id)
+    return render(request, 'app/product_detail.html', {'product': product})
