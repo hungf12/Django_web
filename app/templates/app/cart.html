@@ -1,18 +1,19 @@
 {% extends 'app/base.html' %}
 {% load static %}
+{% load filters %}
 {% block cart_content %}
 <div class="row" style="width:100%">
 	<div class="col-lg-12">
 		<div class="box-element">
 
-			<a  class="btn btn-outline-dark" href="{% url 'home' %}">&#x2190; Continue Shopping</a>
+			<a  class="btn btn-outline-dark" href="{% url 'home' %}">&#x2190; Quay về trang chủ</a>
 
 			<br>
 			<br>
 			<table class="table">
 				<tr>
-					<th><h5>Items: <strong>{{order.get_cart_items}}</strong></h5></th>
-					<th><h5>Total:<strong>{{order.get_cart_total}}</strong></h5></th>
+					<th><h5>Số lượng: <strong>{{order.get_cart_items}}</strong></h5></th>
+					<th><h5>Thành tiền: <strong>{{order.get_cart_total|currency}}VND</strong></h5></th>
 					<th>
 						<a  style="float:right; margin:5px;" class="btn btn-success" href="{% url 'checkout' %}">Checkout</a>
 					</th>
@@ -34,7 +35,7 @@
 			<div class="cart-row">
 				<div style="flex:2"><img class="row-image" src="{{item.product.ImageURL}}"></div>
 				<div style="flex:2"><p>{{item.product.name}}</p></div>
-				<div style="flex:1"><p>{{item.product.price}}</p></div>
+				<div style="flex:1"><p>{{item.product.price|currency}}</p></div>
 				<div style="flex:1">
 					<p class="quantity">{{item.quantity}}</p>
 					<div class="quantity">
@@ -42,7 +43,7 @@
 						<img data-product= {{item.product.id}} data-action= 'remove' class="chg-quantity update-cart" src="{% static  'app/images/arrow-down.png' %}">
 					</div> 
 				</div> 
-				<div style="flex:1"><p>${{item.get_total}}</p></div>
+				<div style="flex:1"><p>{{item.get_total|currency}}</p></div>
 			</div>
 			{%endfor%}
 		</div>

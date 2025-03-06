@@ -1,5 +1,6 @@
 {% extends 'app/base.html' %}
 {% load static %}
+{% load filters %}
 {% block content_checkout %}
      <div class="row" style="width:100%">
 		<div class="col-lg-6">
@@ -49,20 +50,20 @@
          
 		<div class="col-lg-6">
 			<div class="box-element">
-				<a  class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
+				<a  class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Quay về giỏ hàng</a>
 				<hr>
-				<h3>Order Summary</h3>
+				<h3>Sản phẩm đã mua</h3>
 				<hr>
                 {%for item in items %}
 				<div class="cart-row">
 					<div style="flex:2"><img class="row-image" src="{{item.product.ImageURL}}"></div>
 					<div style="flex:2"><p>{{item.product.name}}</p></div>
-					<div style="flex:1"><p>${{item.product.price}}</p></div>
-					<div style="flex:1"><p>{{item.quantity}}</p></div>
+					<div style="flex:1"><p>{{item.product.price|currency}}VND</p></div>
+					<div style="flex:1"><p>{{item.quantity|currency}}</p></div>
 				</div>
                 {%endfor%}
-				<h5>Items:   {{order.get_cart_items}}</h5> 
-				<h5>Total:   ${{order.get_cart_total}}</h5>
+				<h5>Số lượng:   {{order.get_cart_items}}</h5> 
+				<h5>Thành tiền:   {{order.get_cart_total|currency}}VND</h5>
 			</div>
 		</div>
 	</div>

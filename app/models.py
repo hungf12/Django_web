@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.utils import timezone
+import json
 # change forms register django
 class CreateUserForm(UserCreationForm):
     class Meta:
@@ -15,6 +16,8 @@ class Product(models.Model):
     price = models.FloatField()
     digital = models.BooleanField(default=False, null=True, blank=False)
     image = models.ImageField(null=True, blank=True)
+    storage_options = models.JSONField(default=list)
+    colors = models.JSONField(default=list)
     def __str__(self):
         return self.name
     @property

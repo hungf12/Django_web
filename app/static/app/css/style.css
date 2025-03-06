@@ -94,3 +94,11 @@ footer{
     text-align: center;
     padding-bottom: 50px;
 }
+
+.product-card {
+    border-radius: 10px; /* Bo tròn góc container */
+    overflow: hidden; /* Đảm bảo ảnh không bị tràn ra ngoài */
+    border: 1px solid #ddd; /* Thêm viền nhẹ */
+    padding: 10px;
+    background: black;
+}
