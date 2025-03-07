@@ -1,85 +1,127 @@
 {% extends 'app/base.html' %}
 {% load static %}
 {% load filters %}
+
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-        <style>
-            body {
-                background-color: #f8f9fa;
-            }
-            .price {
-                color: red;
-                font-size: 24px;
-                font-weight: bold;
-            }
-            .old-price {
-                text-decoration: line-through;
-                color: gray;
-            }
-            .btn-buy {
-                width: 100%;
-                font-size: 18px;
-            }
-            .promotion-box {
-                background: #ff5722;
-                color: white;
-                padding: 15px;
-                border-radius: 10px;
-            }
-        </style>
-    </head>
-    <body>
-        {% block product_detail %}
-        <div class="container mt-4">
-            <div class="row">
-                <div class="col-md-6 text-center">
-                    <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{ product.name }}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .price {
+            color: red;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .old-price {
+            text-decoration: line-through;
+            color: gray;
+            font-size: 20px;
+            margin-left: 10px;
+        }
+        .btn-buy {
+            width: 100%;
+            font-size: 18px;
+        }
+        .promotion-box {
+            background: #ff5722;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    {% block product_detail %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <img id="product-image" src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
+            </div>
+            <div class="col-md-6">
+                <h2>{{ product.name }}</h2>
+                
+                <!-- Giá hiển thị -->
+                <p class="price">
+                    <span id="price">{{ product.price|currency }}</span>
+                    {% if product.old_price %}
+                        <span class="old-price" id="old-price">{{ product.old_price|currency }}</span>
+                    {% endif %}
+                </p>
+
+                <!-- Chọn dung lượng -->
+                <div class="mb-3">
+                    <label for="storage">Chọn dung lượng</label>
+                    <select name="storage" id="storage" class="form-control">
+                        {% for storage, price in product.storage_options.items %}
+                            <option value="{{ price }}" {% if forloop.first %}selected{% endif %}>{{ storage }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <div class="col-md-6">
-                    <h2>{{ product.name }}</h2>
-                    <p class="price">{{ product.price|currency }}
-                        {% if product.old_price %}
-                            <span class="old-price">{{ product.old_price }}đ</span>
-                        {% endif %}
-                    </p>
 
-                    <!-- Hiển thị các lựa chọn dung lượng trước -->
-                    <div class="mb-3">
-                        {% for storage in product.storage_options %}
-                            <button class="btn btn-outline-primary">{{ storage }}</button>
+                <!-- Chọn màu sắc -->
+                <div class="mt-3">
+                    <label>Chọn màu sắc</label>
+                    <div>
+                        {% for color, image_url in product.colors.items %}
+                            <button class="btn btn-outline-secondary color-btn" data-image="{{ image_url }}">{{ color }}</button>
                         {% endfor %}
                     </div>
+                </div>
 
-                    <!-- Hiển thị các lựa chọn màu sắc bên dưới -->
-                    <div class="mt-3">
-                        {% for color in product.colors %}
-                            <button class="btn btn-outline-secondary">{{ color }}</button>
-                        {% endfor %}
-                    </div>
-
-                    <div class="mt-3 promotion-box">
-                        <h5>Chính sách khuyến mãi</h5>
-                        <ul>
-                            <li>Giảm giá lên đến 1.050.000đ</li>
-                            <li>Hỗ trợ đổi máy cũ trợ giá 2.500.000đ</li>
-                            <li>Trả góp 0% qua thẻ tín dụng</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="mt-3">
-                        <button class="btn btn-danger btn-buy">MUA NGAY</button>
-                        <button class="btn btn-primary btn-buy">Trả Góp Qua Thẻ</button>
-                    </div>
+                <!-- Chính sách khuyến mãi -->
+                <div class="mt-3 promotion-box">
+                    <h5>Chính sách khuyến mãi</h5>
+                    <ul>
+                        <li>Giảm giá lên đến 1.050.000đ</li>
+                        <li>Hỗ trợ đổi máy cũ trợ giá 2.500.000đ</li>
+                        <li>Trả góp 0% qua thẻ tín dụng</li>
+                    </ul>
+                </div>
+                
+                <!-- Nút mua hàng -->
+                <div class="mt-3">
+                    <button class="btn btn-danger btn-buy">MUA NGAY</button>
+                    <button class="btn btn-primary btn-buy">Trả Góp Qua Thẻ</button>
                 </div>
             </div>
-        </div>   
-        {% endblock product_detail %}
-    </body>
+        </div>
+    </div>   
+
+    <!-- Script cập nhật giá và hình ảnh -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let storageSelect = document.getElementById("storage");
+            let priceElement = document.getElementById("price");
+
+            // Cập nhật giá khi chọn dung lượng
+            storageSelect.addEventListener("change", function () {
+                let selectedPrice = this.value;
+                priceElement.textContent = parseInt(selectedPrice).toLocaleString("vi-VN") + "đ";
+            });
+
+            // Cập nhật ảnh khi chọn màu sắc
+            let colorButtons = document.querySelectorAll(".color-btn");
+            let productImage = document.getElementById("product-image");
+
+            colorButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    let newImage = this.getAttribute("data-image");
+                    if (newImage) {
+                        productImage.src = newImage;
+                    }
+                });
+            });
+        });
+    </script>
+
+    {% endblock product_detail %}
+</body>
 </html>
