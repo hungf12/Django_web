@@ -2,68 +2,83 @@
 {% load static %}
 {% load filters %}
 {% block banner_slider %}
-<div id="carouselExampleDark" class="carousel carousel-dark slide">
+<div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
     <div class="carousel-indicators">
-      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
-      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
-      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="3" aria-label="Slide 4"></button>
+        <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="3" aria-label="Slide 4"></button>
     </div>
     <div class="carousel-inner">
-      <div class="carousel-item active" data-bs-interval="10000">
-        <img src="{%static 'app/images/banner/baner_ip16.jpg' %}" class="d-block w-100" alt="..." height="480">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Iphone 16 series</h5>
-          <p>Sản phẩm bán chạy số 1</p>
+        <div class="carousel-item active" data-bs-interval="5000">
+            <img src="{% static 'app/images/banner/baner_ip16.jpg' %}" class="d-block w-100 rounded" alt="..." height="480">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Iphone 16 series</h5>
+                <p>Sản phẩm bán chạy số 1</p>
+            </div>
         </div>
-      </div>
-      <div class="carousel-item" data-bs-interval="2000">
-        <img src="{%static 'app/images/banner/baner_ip15_2.jpg' %}" class="d-block w-100" alt="..." height="480">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Iphone 15 series</h5>
-          <p>Sản phẩm bán chạy số 2</p>
+        <div class="carousel-item" data-bs-interval="5000">
+            <img src="{% static 'app/images/banner/baner_ip15_2.jpg' %}" class="d-block w-100 rounded" alt="..." height="480">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Iphone 15 series</h5>
+                <p>Sản phẩm bán chạy số 2</p>
+            </div>
         </div>
-      </div>
-      <div class="carousel-item">
-        <img src="{%static 'app/images/banner/iphone-14-pro-max.png' %}" class="d-block w-100" alt="..." height="480">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Iphone 14 series</h5>
-          <p>Sản phẩm bán chạy số 3</p>
+        <div class="carousel-item" data-bs-interval="5000">
+            <img src="{% static 'app/images/banner/iphone-14-pro-max.png' %}" class="d-block w-100 rounded" alt="..." height="480">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Iphone 14 series</h5>
+                <p>Sản phẩm bán chạy số 3</p>
+            </div>
         </div>
-      </div>
-      <div class="carousel-item">
-        <img src="{%static 'app/images/banner/baner_ip13.png' %}" class="d-block w-100" alt="..." height="480">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Iphone 13 series</h5>
-          <p>Sản phẩm bán chạy số 4</p>
+        <div class="carousel-item" data-bs-interval="5000">
+            <img src="{% static 'app/images/banner/baner_ip13.png' %}" class="d-block w-100 rounded" alt="..." height="480">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Iphone 13 series</h5>
+                <p>Sản phẩm bán chạy số 4</p>
+            </div>
         </div>
-      </div>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
     </button>
     <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
     </button>
-  </div>
+</div>
 {% endblock banner_slider %}
-{% block main-content %} 
-<div class="row" style="width: 100%">
-  {%for product in products %}
-    <div class="col-lg-3">
-        <img class="thumbnail" src="{{product.ImageURL}}">
-        <div class="box-element product">
-            <h6><strong>{{product.name}}</strong></h6>
-            <hr>
-            <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Thêm vào giở hàng</button>
-            <a class="btn btn-outline-success" href="{% url 'product_detail' product.id %}">Thông tin</a>
-            <h3 style="display: line-block; float: right"><strong>{{product.price|currency}}</strong></h3>
 
+{% block main-content %}
+<div class="row" style="width: 100%">
+    {% for product in products %}
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="box-element product">
+            <div class="product-image-container">
+                <img src="{{ product.ImageURL }}" alt="{{ product.name }}">
+            </div>
+            <div class="product-info">
+                <h6 class="product-name"><strong>{{ product.name }}</strong></h6>
+                <h6 class="product-price"><strong>{{ product.price|currency }}</strong> VND</h6>
+            </div>
+            <hr>
+            <button data-product="{{ product.id }}" data-action="add" class="btn add-btn update-cart">
+                <i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng
+            </button>
+            <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-success">
+                <i class="bi bi-info-circle"></i> Thông tin
+            </a>
+            <div class="storage-options">
+                {% for storage in product.storage_options %}
+                <button class="btn btn-outline-primary storage-btn" data-storage="{{ storage }}">
+                    <i class="bi bi-memory"></i> {{ storage }}
+                </button>
+                {% endfor %}
+            </div>
         </div>
     </div>
     {% endfor %}
 </div>
 <br /><br /><br />
-{%endblock main-content %}
+{% endblock main-content %}

@@ -4,10 +4,11 @@
 {% block cart_content %}
 <div class="row" style="width:100%">
 	<div class="col-lg-12">
-		<div class="box-element">
-
-			<a  class="btn btn-outline-dark" href="{% url 'home' %}">&#x2190; Quay về trang chủ</a>
-
+		<div class="box-element product">
+			<!-- <a class="btn btn-outline-dark" style="float: left; margin: 2px;" href="{% url 'home' %}">&#x2190; Quay về trang chủ</a> -->
+			 <div class="payment-btn">
+				<a class="btn btn-success" href="{% url 'home' %}"><i class="bi bi-house"></i> Trang chủ</a>
+			 </div>
 			<br>
 			<br>
 			<table class="table">
@@ -15,21 +16,19 @@
 					<th><h5>Số lượng: <strong>{{order.get_cart_items}}</strong></h5></th>
 					<th><h5>Thành tiền: <strong>{{order.get_cart_total|currency}}VND</strong></h5></th>
 					<th>
-						<a  style="float:right; margin:5px;" class="btn btn-success" href="{% url 'checkout' %}">Checkout</a>
+						<a class="btn btn-success" href="{% url 'checkout' %}"> <i class="bi bi-credit-card"></i> Thanh toán</a>
 					</th>
 				</tr>
 			</table>
-
 		</div>
-
 		<br>
 		<div class="box-element">
 			<div class="cart-row">
 				<div style="flex:2"></div>
-				<div style="flex:2"><strong>Item</strong></div>
-				<div style="flex:1"><strong>Price</strong></div>
-				<div style="flex:1"><strong>Quantity</strong></div>
-				<div style="flex:1"><strong>Total</strong></div>
+				<div style="flex:2"><strong>Sản phẩm</strong></div>
+				<div style="flex:1"><strong>Đơn giá</strong></div>
+				<div style="flex:1"><strong>Số lượng</strong></div>
+				<div style="flex:1"><strong>Thành tiền</strong></div>
 			</div>
 			{% for item in items %}
 			<div class="cart-row">

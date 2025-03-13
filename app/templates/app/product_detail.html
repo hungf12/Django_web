@@ -1,7 +1,6 @@
 {% extends 'app/base.html' %}
 {% load static %}
 {% load filters %}
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,12 +36,87 @@
             border-radius: 10px;
         }
     </style>
+    <style>
+        select {
+            width: 200px;
+            height: 40px;
+            font-size: 16px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <style>
+        .img-container{
+            width: 200px;
+            height: 200px;
+            overflow: hidden;
+        }
+        .img-container img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f8f8;
+        }
+        .container{
+            text-align: center;
+        }
+        .main-image{
+            width: 400px;
+            height: 400px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .main-image img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .thumbnail-container{
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top:  15px;
+        }
+        .thumbnail{
+            width: 60px;
+            height: 60px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: border 0.3s ease-in-out;
+        }
+        .thumbnail img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .thumbnail.active{
+            border: 2px solid red;
+        }
+    </style>
 </head>
 <body>
     {% block product_detail %}
     <div class="container mt-4">
         <div class="row">
-            <div class="col-md-6 text-center">
+            <div class="product-image-container">
                 <img id="product-image" src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
             </div>
             <div class="col-md-6">
@@ -57,9 +131,9 @@
                 </p>
 
                 <!-- Chọn dung lượng -->
-                <div class="mb-3">
+                <div class="mb-2">
                     <label for="storage">Chọn dung lượng</label>
-                    <select name="storage" id="storage" class="form-control">
+                    <select  name="storage" id="storage" class="select">
                         {% for storage, price in product.storage_options.items %}
                             <option value="{{ price }}" {% if forloop.first %}selected{% endif %}>{{ storage }}</option>
                         {% endfor %}
@@ -87,40 +161,53 @@
                 </div>
                 
                 <!-- Nút mua hàng -->
-                <div class="mt-3">
-                    <button class="btn btn-danger btn-buy">MUA NGAY</button>
+                <div class="button-product-detail">
+                    <!-- <a href="{% url 'checkout' %}" class="btn btn-danger btn-buy">MUA NGAY</a> -->
+                    <button data-product="{{product.id}}" data-action="add" class="btn add-btn update-cart"><i class="fas fa-shopping-cart"></i> MUA NGAY</button>
                     <button class="btn btn-primary btn-buy">Trả Góp Qua Thẻ</button>
                 </div>
             </div>
         </div>
-    </div>   
-
+    </div>
     <!-- Script cập nhật giá và hình ảnh -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             let storageSelect = document.getElementById("storage");
             let priceElement = document.getElementById("price");
-
+    
             // Cập nhật giá khi chọn dung lượng
             storageSelect.addEventListener("change", function () {
                 let selectedPrice = this.value;
                 priceElement.textContent = parseInt(selectedPrice).toLocaleString("vi-VN") + "đ";
             });
-
-            // Cập nhật ảnh khi chọn màu sắc
+    
+            // Cập nhật ảnh khi chọn màu sắc với hiệu ứng trượt
             let colorButtons = document.querySelectorAll(".color-btn");
             let productImage = document.getElementById("product-image");
-
+    
             colorButtons.forEach(button => {
                 button.addEventListener("click", function () {
                     let newImage = this.getAttribute("data-image");
+    
                     if (newImage) {
-                        productImage.src = newImage;
+                        // Thêm hiệu ứng trượt ra ngoài bên trái
+                        productImage.style.transition = "transform 0.4s ease-in-out";
+                        productImage.style.transform = "translateX(-100%)";
+                        
+                        setTimeout(() => {
+                            productImage.src = newImage; // Đổi ảnh mới
+                            productImage.style.transform = "translateX(100%)"; // Đưa ảnh từ phải vào
+                        }, 400);
+    
+                        setTimeout(() => {
+                            productImage.style.transform = "translateX(0)"; // Ổn định ảnh ở giữa
+                        }, 800);
                     }
                 });
             });
         });
     </script>
+    
 
     {% endblock product_detail %}
 </body>

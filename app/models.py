@@ -66,10 +66,11 @@ class ShippingAddress(models.Model):
     def __str__(self):
         return self.address    
 
+class Store(models.Model):
+    name = models.CharField(max_length=255)
+    address = models.TextField()
+    latitude = models.TextField()
+    longitude = models.TextField()
 
-class Location(models.Model):
-    location_name =models.CharField(max_length= 256)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
     def __str__(self):
-        return self.location_name
+        return self.name

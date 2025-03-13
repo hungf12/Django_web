@@ -2,43 +2,42 @@
 {% load static %}
 {% load filters %}
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        {% block register %}
-        <h2>Kết quả trả về cho các dòng "{{ query }}"</h2>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kết quả tìm kiếm</title>
+    <link rel="stylesheet" href="{% static 'app/css/main.css' %}">
+</head>
+<body>
+    {% block register %}
+    <h2>{{ query_name }}</h2>
 
-        {% if results %}
-        <div class="row" style="width: 100%">
-            {%for item in results %}
-              <div class="col-lg-3">
-                  <img class="thumbnail" src="{{item.ImageURL}}">
-                  <div class="box-element product">
-                      <h6><strong>{{item.name}}</strong></h6>
-                      <hr>
-                      <button data-product="{{item.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Thêm vào giở hàng</button>
-                      <a class="btn btn-outline-success" href="#">Thông tin</a>
-                      <h3 style="display: line-block; float: right"><strong>{{item.price|currency}}</strong></h3>
-          
-                  </div>
-              </div>
-              {% endfor %}
-          </div>
-        {% else %}
-            <p>No results found.</p>
-        {% endif %}
-        
-        {% endblock register%}
-    </body>
+    {% if results %}
+    <div class="row" style="width: 100%">
+        {% for item in results %}
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="box-element product">
+                <div class="product-image-container">
+                    <img src="{{ item.ImageURL }}" alt="{{ item.name }}">
+                </div>
+                <div class="product-info">
+                    <h6 class="product-name"><strong>{{ item.name }}</strong></h6>
+                    <h6 class="product-price"><strong>{{ item.price|currency }}</strong> VND</h6>
+                </div>
+                <hr>
+                <button data-product="{{ item.id }}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">
+                    <i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng
+                </button>
+                <a class="btn btn-outline-success" href="#">Thông tin</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p>Không tìm thấy kết quả.</p>
+    {% endif %}
+    {% endblock register %}
+</body>
 </html>

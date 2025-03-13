@@ -1,5 +1,6 @@
 body{
 	background-color: hsl(0, 0%, 98%);
+    padding-top: 90px;
 }
 
 h1,h2,h3,h4,h5,h6{
@@ -20,7 +21,7 @@ h1,h2,h3,h4,h5,h6{
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border-radius: 10px;
+	border-radius: px;
 	-webkit-box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
     -moz-box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
     box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
@@ -61,18 +62,20 @@ h1,h2,h3,h4,h5,h6{
 	margin-top: 20px;
 }
 
-.btn{
-	border-radius: 0;
-}
+/* .btn{
+	border-radius: 10px;
+	text-align: left;
+} */
 
 .row-image{
-	width: 100px;
+	width: 200px;
 }
 
 .form-field{
-	width:250px;
-	display: inline-block;
-	padding: 5px;
+	width:750px;
+	height: 70px;
+	display: flex;
+	padding: 15px;
 }
 
 .cart-row{
@@ -107,4 +110,223 @@ h1,h2,h3,h4,h5,h6{
 
 .hidden{
 	display: none!important;
+}
+
+
+.product-image-container {
+    width: 100%;
+    max-width: 200px; /* Giới hạn kích thước tối đa */
+    height: 200px; /* Định chiều cao cố định */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin: 0 auto; /* Căn giữa ảnh */
+    border: 1px solid #ddd;
+    border-radius: 10px; /* Bo góc ảnh */
+}
+
+.product-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Đảm bảo ảnh lấp đầy khung mà không bị méo */
+    transition: transform 0.3s ease-in-out;
+}
+
+.product-image-container img:hover {
+    transform: scale(1.05); /* Hiệu ứng phóng to nhẹ khi di chuột vào */
+}
+
+
+.box-element {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+    width: 100%; /* Ảnh rộng 100% box */
+    max-height: 200px; /* Giới hạn chiều cao */
+    object-fit: contain; /* Giữ nguyên tỷ lệ ảnh */
+    margin-bottom: 10px;
+}
+
+.product-price {
+    font-size: 18px;
+    color: #e63946;
+    margin-top: 10px;
+}
+
+.add-btn, .btn-outline-success {
+    margin-left: 5px;
+    width: 100%; /* Nút bấm rộng 100% box */
+}
+
+
+/* Định dạng nút bấm nhỏ gọn */
+button, .btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 160px;
+	height: 40px;
+	padding: 8px 16px;
+	font-size: 14px;
+    border-radius: 8px; /* Bo góc nhẹ */
+    font-size: 14px; /* Giảm kích thước chữ */
+    transition: all 0.3s ease-in-out; /* Hiệu ứng hover */
+}
+
+/* Hiệu ứng hover */
+button:hover, .btn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* Nút "Thêm vào giỏ hàng" */
+.add-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.add-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Nút "Thông tin" */
+.btn-outline-success {
+    border: 1px solid #28a745;
+    color: #28a745;
+}
+
+.btn-outline-success:hover {
+    background-color: #28a745;
+    color: white;
+}
+
+.product .btn {
+    display: block;  /* Hiển thị nút dưới dạng block để dễ căn chỉnh */
+    text-align: center;  /* Canh trái nội dung của button */
+    width: 100%; /* Đảm bảo button không bị co lại */
+}
+
+.storage-options {
+    display: flex;
+    gap: 8px; /* Giảm khoảng cách giữa các button */
+    flex-wrap: wrap;
+    justify-content: center;
+	margin-left: 5px;
+}
+
+.storage-btn {
+    padding: 6px 10px; /* Giảm padding để thu nhỏ button */
+    width: 40px; /* Giới hạn chiều dài button */
+    border-radius: 6px; /* Bo góc */
+    text-align: center; /* Căn giữa chữ */
+    transition: all 0.3s ease-in-out;
+    white-space: nowrap; /* Ngăn chữ xuống dòng */
+}
+
+.storage-btn:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.storage-btn.active {
+    background-color: #28a745;
+    color: white;
+    border-color: #28a745;
+}
+
+.payment-btn {
+    display: flex; /* Dùng flexbox để căn giữa */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    padding: 8px 20px; /* Điều chỉnh kích thước */
+    font-size: 12px; /* Điều chỉnh kích thước chữ */
+    width: 150px; /* Giới hạn chiều rộng */
+    border-radius: 6px; /* Bo góc mềm mại */
+    text-align: center; /* Căn giữa chữ */
+    white-space: nowrap; /* Ngăn chữ bị xuống dòng */
+    text-overflow: ellipsis; /* Hiển thị dấu "..." nếu chữ quá dài */
+    transition: all 0.3s ease-in-out;
+}
+
+.payment-btn:hover {
+    background-color: white;
+}
+
+.radio-group {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Tạo khoảng cách giữa các phần tử */
+}
+
+.radio-group label {
+    margin-left: 5px; /* Tạo khoảng cách giữa radio và chữ */
+}
+
+.box-element-strore {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Canh trái */
+    padding-left: 20px; /* Dịch sang trái */
+    background: #ececec;
+    border-radius: 10px;
+}
+
+.store-card {
+    width: 400px; /* Đặt lại kích thước hợp lý */
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    background: #fff;
+}
+
+.store-card iframe {
+    width: 100%; /* Chiếm toàn bộ chiều rộng store-card */
+    height: 250px; /* Giảm chiều cao */
+    border-radius: 10px;
+}
+
+.box-element-contract {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.box-element-list-product {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Canh trái */
+    padding-left: 20px; /* Dịch sang trái */
+    background: #ececec;
+    border-radius: 10px;
+}
+
+.box-element-intro {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+.button-product-detail {
+    display: flex;
+    gap: 10px; /* Giảm khoảng cách giữa các button */
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding-left: -20px;
+	margin-left: 5px;
 }

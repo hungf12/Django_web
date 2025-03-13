@@ -97,36 +97,140 @@ def updateItem(request):
     # },safe=False)
 
 def search_items(request):
-    # if request.method == "POST":
-    #     searched = request.POST["searched"]
-    #     keys = Product.objects.filter(name__contains = searched)
-    # return render(request, "app/search.html", {"searched": searched, "keys": keys})
     query = request.GET.get('q')
     result = []
 
     if query:
+        query_name = f"kết quả trả về cho sản phẩm {query}"
         result = Product.objects.filter(Q(name__icontains=query))[:1]
     else:
         result = Product.objects.all()
+        query_name = "Tất cả sản phẩm"
+    
+    if request.user.is_authenticated:
+        customer = request.user
+        order, created = Order.objects.get_or_create(customer=customer,complete = False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {'get_cart_items':0,'get_cart_total':0}
+        cartItems = order['get_cart_items']
+    context = {
+        'items': items,
+        'order': order,
+        'cartItems': cartItems,
+        'results': result,
+        "query": query,
+        "query_name": query_name
+    }
 
-    return render(request, "app/search.html", {"results": result, "query": query})
+    return render(request, "app/search.html", context)
 
 def intro(request):
-    return render(request, "app/intro.html")
+    if request.user.is_authenticated:
+        customer = request.user
+        order, created = Order.objects.get_or_create(customer=customer,complete = False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {'get_cart_items':0,'get_cart_total':0}
+        cartItems = order['get_cart_items']
+    context = {'items': items,'order':order, 'cartItems': cartItems}
+    return render(request, "app/intro.html",context)
 
 def list_product(request):
-    attribute = request.GET.get('attribute','all')
+    if request.user.is_authenticated:
+        customer = request.user
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {'get_cart_items': 0, 'get_cart_total': 0}
+        cartItems = order['get_cart_items']
+
+    # Lọc sản phẩm dựa trên 'attribute'
+    attribute = request.GET.get('attribute', 'all')
     if attribute == "all":
         products = Product.objects.all()
     else:
         products = Product.objects.filter(attribute=attribute)
-    return render(request,'app/list_product.html',{'products':products})
+
+    # Gộp tất cả biến vào một từ điển context
+    context = {
+        'items': items,
+        'order': order,
+        'cartItems': cartItems,
+        'products': products  # Thêm products vào context
+    }
+
+    return render(request, 'app/list_product.html', context)
+
 
 def contract(request):
-    # Location.objects.create(location_name="default", latitude=10.762622, longitude=106.660172)
-    locations = Location.objects.all()
-    return render(request, 'app/contract.html',{'locations':locations})
+    if request.user.is_authenticated:
+        customer = request.user
+        order, created = Order.objects.get_or_create(customer=customer,complete=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {'get_cart_items': 0, 'get_cart_total': 0}
+        cartItems = order["get_cart_items"]
+    
+    # locations = Location.objects.all()
+
+    context = {
+        "items": items,
+        "cartItems": cartItems,
+        "order": order,
+        # "locations": locations
+    }
+    return render(request, 'app/contract.html', context)
 
 def product_detail(request, product_id):
+    if request.user.is_authenticated:
+       customer = request.user
+       order, created = Order.objects.get_or_create(customer=customer, complete=False)
+       items = order.orderitem_set.all()
+       cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {'get_cart_items': 0, 'get_cart_total': 0}
+        cartItems = order["get_cart_items"]
+    
     product = get_object_or_404(Product,id = product_id)
-    return render(request, 'app/product_detail.html', {'product': product})
+
+    context = {
+        "items": items,
+        "cartItems": cartItems,
+        "order": order,
+        "product": product
+    }
+    return render(request, 'app/product_detail.html', context)
+
+def store_list(request):
+    if request.user.is_authenticated:
+        customer = request.user
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {'get_cart_items': 0, 'get_cart_total': 0}
+        cartItems = order["get_cart_items"]
+    
+    stores = Store.objects.all()
+
+    context = {
+        "items": items,
+        "cartItems": cartItems,
+        "order": order,
+        "stores": stores
+    }
+    
+    return render(request, 'app/store_list.html',context)
+    # stores = Store.objects.all()
+    # return render(request, 'app/store_list.html', {'stores': stores}) 

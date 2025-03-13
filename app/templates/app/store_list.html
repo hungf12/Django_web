@@ -1,0 +1,34 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load filters %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Cửa Hàng</title>
+</head>
+<body>
+    {% block store_list %}
+    <h1 style="text-align: center;">Hệ Thống Cửa Hàng</h1>
+    <div class="box-element-strore">
+        {% for store in stores %}
+        <div class="store-card">
+            <iframe 
+                width="100%" 
+                height="250" 
+                style="border:0" 
+                loading="lazy"
+                allowfullscreen 
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5149.785017172116!2d105.78629431199653!3d21.02715088054107!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab4e65ab861b%3A0x492f82fc7eeae5a2!2zMTAgUC4gUGjhuqFtIFbEg24gQuG6oWNoLCBE4buLY2ggVuG7jW5nLCBD4bqndSBHaeG6pXksIEjDoCBO4buZaSAxMDAwMCwgVmnhu4d0IE5hbQ!5e1!3m2!1svi!2s!4v1741833727185!5m2!1svi!2s">
+            </iframe>
+            <p>📍 {{ store.address }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endblock store_list %}
+</body>
+</html>
+
+

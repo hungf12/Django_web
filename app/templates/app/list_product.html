@@ -1,5 +1,6 @@
 {% extends 'app/base.html' %}
 {% load static %}
+{% load filters %}
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -13,18 +14,19 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
+
     </head>
     <body>
         {% block list_product %}
-        <div class="row">
+        <div class="box-element-list-product">
             {% for item in products %}
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card">
                     <img src="{{ item.ImageURL }}" class="card-img-top" alt="{{ item.name }}">
                     <div class="card-body text-center">
-                        <h5 class="card-title">{{ item.name }}</h5>
+                        <h6 class="card-title">{{ item.name }}</h6>
                         <p class="card-text">{{ item.attribute }}</p>
-                        <p class="fw-bold text-danger">Giá: {{ item.price }}$</p>
+                        <p class="fw-bold text-danger">Giá: {{ item.price|currency}}VND</p>
                     </div>
                 </div>
             </div>

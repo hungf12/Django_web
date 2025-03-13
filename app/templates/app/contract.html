@@ -1,83 +1,74 @@
 {% extends 'app/base.html' %}
 {% load static %}
+{% load filters %}
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
-    <head>
+  <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
+        <title>Liên hệ</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
     <body>
-        {% block contract %}
-        <section class="text-center">
-
-
-            <h3 class="mb-5">Gửi phản hồi</h3>
-          
-            <div class="row">
-              <div class="col-lg-5">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10302.828853296405!2d105.7665573181246!3d20.97994052230596!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31345331fe07e635%3A0xf83ecc713b1a11f6!2zVuG6oW4gUGjDumMsIEjDoCDEkMO0bmcsIEjDoCBO4buZaSwgVmnhu4d0IE5hbQ!5e1!3m2!1svi!2s!4v1741163001367!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-              </div>
-          
-              <div class="col-lg-7">
-                <form>
-                  <div class="row">
-                    <div class="col-md-9">
-                      <div class="row mb-4">
-                        <div class="col-md-6 mb-4 mb-md-0">
-                          <div data-mdb-input-init class="form-outline">
-                            <input type="text" id="form3Example1" class="form-control" />
-                            <label class="form-label" for="form3Example1">Tên</label>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div data-mdb-input-init class="form-outline">
-                            <input type="email" id="form3Example2" class="form-control" />
-                            <label class="form-label" for="form3Example2">Email</label>
-                          </div>
-                        </div>
-                      </div>
-                      <div data-mdb-input-init class="form-outline mb-4">
-                        <textarea class="form-control" id="form4Example3" rows="4"></textarea>
-                        <label class="form-label" for="form4Example3">Nội dung</label>
-                      </div>
-                      <div class="text-center text-md-start">
-                        <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary mb-5 mb-md-0">
-                          Send
-                        </button>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <ul class="list-unstyled">
-                        <li>
-                          <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
-                          <p><small>Van Phuc silk village, Ha Dong district, Hanoi city</small></p>
-                        </li>
-                        <li>
-                          <i class="fas fa-phone fa-2x text-primary"></i>
-                          <p><small>+84 66 984 782</small></p>
-                        </li>
-                        <li>
-                          <i class="fas fa-envelope fa-2x text-primary"></i>
-                          <p><small>hungtd@gmail.com</small></p>
-                        </li>
-                      </ul>
-                    </div>
+      {% block contract%}
+      <div class="box-element-contract">
+          <div class="contact-container text-center">
+              <h2 class="mb-4">HỆ THỐNG CỬA HÀNG</h2>
+              <div class="row mb-4">
+                  <div class="col-md-3">
+                      <i class="contact-icon bi bi-geo-alt"></i>
+                      <h5>Địa chỉ liên hệ</h5>
+                      <p>Số 10 Phạm Văn Bạch - Cầu Giấy - Hà Nội</p>
                   </div>
-                </form>
-          
+                  <div class="col-md-3">
+                      <i class="contact-icon bi bi-telephone"></i>
+                      <h5>Tổng đài</h5>
+                      <p><strong>0246 681 9779</strong></p>
+                  </div>
+                  <div class="col-md-3">
+                      <i class="contact-icon bi bi-clock"></i>
+                      <h5>Giờ làm việc</h5>
+                      <p>8h30 - 22h30 (Cả ngày lễ)</p>
+                  </div>
+                  <div class="col-md-3">
+                      <i class="contact-icon bi bi-envelope"></i>
+                      <h5>Email liên hệ</h5>
+                      <p>hungtd36@gmail.com</p>
+                  </div>
               </div>
-            </div>
-          
-          
-          </section>
-        {% endblock contract%}
-    </body>
+              <p>Cảm ơn bạn đã quan tâm đến sản phẩm và dịch vụ của chúng tôi, vui lòng gửi liên hệ qua mẫu dưới đây.</p>
+              <form>
+                  <div class="row mb-3">
+                      <div class="col-md-6">
+                          <input type="text" class="form-control" placeholder="Họ và tên">
+                      </div>
+                      <div class="col-md-6">
+                          <input type="text" class="form-control" placeholder="Địa chỉ">
+                      </div>
+                  </div>
+                  <div class="row mb-3">
+                      <div class="col-md-6">
+                          <input type="text" class="form-control" placeholder="Số điện thoại">
+                      </div>
+                      <div class="col-md-6">
+                          <input type="email" class="form-control" placeholder="Email">
+                      </div>
+                  </div>
+                  <div class="mb-3">
+                      <textarea class="form-control" rows="4" placeholder="Nội dung"></textarea>
+                  </div>
+                  <button type="submit" class="btn btn btn-success w-100">Gửi liên hệ</button>
+              </form>
+          </div>
+      </div>
+      {% endblock contract%}
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>
