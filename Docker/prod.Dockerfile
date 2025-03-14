@@ -27,7 +27,7 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8000
 
 # Đảm bảo Gunicorn có thể chạy
-RUN which gunicorn
+# RUN which gunicorn
 
 # Chạy ứng dụng Django với Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "webbanhang.wsgi:application"]
+CMD ["waitress-serve", "--listen=0.0.0.0:8000", "webbanhang.wsgi:application"]

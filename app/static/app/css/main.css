@@ -330,3 +330,19 @@ button:hover, .btn:hover {
     padding-left: -20px;
 	margin-left: 5px;
 }
+
+html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1; /* Đẩy footer xuống nếu nội dung ít */
+}
+
+footer {
+    position: relative;
+    width: 100%;
+    height: auto;
+}

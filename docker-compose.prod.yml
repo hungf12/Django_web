@@ -12,6 +12,22 @@ services:
       - .env.prod
     volumes:
       - sqlite_data:/app/db
+      - static_volume:/app/staticfiles  # Mount thư mục static
+      - media_volume:/app/static/images  # Mount thư mục media
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d/  # 🔥 Mount file cấu hình Nginx
+      - static_volume:/app/staticfiles  # Mount thư mục static
+      - media_volume:/app/static/images  # Mount thư mục media
+    depends_on:
+      - web  # Chỉ nginx phụ thuộc vào web
 
 volumes:
   sqlite_data:
+  static_volume:
+  media_volume:
