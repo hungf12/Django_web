@@ -76,17 +76,17 @@
                   <!-- <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="{% url 'intro' %}">Chính sách</a>
                   </li> -->
-                  <li class="nav-item dropdown">
+                  <!-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Chính sách
                     </a>
                     <ul class="dropdown-menu">
                       <li><a class="dropdown-item" href="{% url 'intro' %}">Chính sách mua hàng</a></li>
-                      <li><a class="dropdown-item" href="#">Chính sách bảo hành</a></li>
-                      <li><a class="dropdown-item" href="#">Chính sách vận chuyển</a></li>
+                      <li><a class="dropdown-item" href="{% url 'guarantee' %}">Chính sách bảo hành</a></li>
+                      <li><a class="dropdown-item" href="{% url 'transport' %}">Chính sách vận chuyển</a></li>
                   </ul>
-                  </li>
-                  <li class="nav-item dropdown">
+                  </li> -->
+                  <!-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Sản phẩm
                     </a>
@@ -96,16 +96,64 @@
                       <li><a class="dropdown-item" href="{% url 'list_product' %}?attribute=Nokia">Nokia</a></li>
                       <li><a class="dropdown-item" href="{% url 'list_product' %}?attribute=Accessories">Phụ kiện</a></li>
                   </ul>
-                  </li>
-                  <li class="nav-item">
+                  </li> -->
+                  <div class="menu">
+                    <button class="menu-button" onclick="toggleMenu()">☰ Danh Mục</button>
+                    <div class="dropdown" id="menuDropdown">
+                        <div class="has-submenu">
+                            <a href="#" onclick="toggleSubMenu(event)">📱 Điện thoại</a>
+                            <div class="submenu" id="phoneMenu">
+                                <div class="column">
+                                    <h4>iPhone</h4>
+                                    <a href="{% url 'list_product' %}?attribute=16Series">iPhone 16 Series</a>
+                                    <a href="#">iPhone 15 Series</a>
+                                    <a href="#">iPhone 14 Series</a>
+                                </div>
+                                <div class="column">
+                                    <h4>Samsung</h4>
+                                    <a href="#">Samsung S25 Series</a>
+                                    <a href="#">Samsung S24 Series</a>
+                                    <a href="#">Samsung S23 Series</a>
+                                </div>
+                                <div class="column">
+                                    <h4>Xiaomi</h4>
+                                    <a href="#">Xiaomi 14 Series</a>
+                                    <a href="#">Xiaomi 13 Series</a>
+                                    <a href="#">Redmi 13 Series</a>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">💻 Máy tính bảng</a>
+                        <a href="#">🖥️ Macbook</a>
+                        <a href="#">⌚ Đồng hồ thông minh</a>
+                        <a href="#">🎧 Âm thanh</a>
+                        <a href="#">🔥 Khuyến mãi</a>
+                    </div>
+                  </div>
+                  <!-- <li class="nav-item">
                     <a class="nav-link" href="{%url 'contract'%}">Liên hệ</a>
-                  </li>
+                  </li> -->
                 </ul>
-                <form class="d-flex" role="search" method="GET" action="{%url 'search'%}">
-                  {%csrf_token%}
-                  <input class="form-control me-2" type="text" placeholder="Tìm kiếm" aria-label="Search" name="q">
-                  <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i> Tìm kiếm</button>
-                </form>
+                <div class="d-flex align-items-center header">
+                  <!-- Giỏ hàng -->
+                  <div class="cart">
+                      <a href="{% url 'cart' %}">
+                          <img id="cart-icon" src="{% static 'images/cart.png' %}" alt="Giỏ hàng">
+                      </a>
+                      <p id="cart-total" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                          {{ cartItems }}
+                      </p>
+                  </div>
+              
+                  <!-- Ô tìm kiếm -->
+                  <form class="d-flex" role="search" method="GET" action="{% url 'search' %}">
+                      {% csrf_token %}
+                      <input class="form-control me-2" type="text" placeholder="Tìm kiếm" aria-label="Search" name="q">
+                      <button class="btn btn-outline-success" type="submit">
+                          <i class="bi bi-search"></i> Tìm kiếm
+                      </button>
+                  </form>
+              </div>              
               </div> 
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <div class="form-inline my-2 my-lg-0">
@@ -135,10 +183,10 @@
                 </ul>
                 </li>
               </ul>
-              <div class="form-inline my-2 my-lg-0">
+              <!-- <div class="form-inline my-2 my-lg-0">
                 <a href="{%url 'cart' %}"><img id="cart-icon" src="{%static 'images/cart.png'%}"></a>
                 <p id="cart-total">{{cartItems}}</p>
-              </div>
+              </div> -->
             </div>
           </nav>
 
@@ -165,6 +213,10 @@
         {% block product_detail %}{% endblock product_detail %}
         <!--Giao diện store list-->
         {% block store_list %}{% endblock store_list %}
+        <!--Giao diện thông tin vận chuyển-->
+        {% block transport %}{% endblock transport %}
+        <!--Giao diện chính sách bảo hành-->
+        {% block guarantee %}{% endblock guarantee %}
         <!--footer-->
       </div>
       <footer class="bg-secondary text-white text-center text-lg-start">
@@ -193,9 +245,9 @@
                   <div class="col-lg-3 col-md-6 mb-4">
                       <h6 class="text-uppercase">Chính sách</h6>
                       <ul class="list-unstyled">
-                          <li><a href="#" class="text-white"><i class="bi bi-arrow-right-square"></i> Chính sách mua hàng</a></li>
-                          <li><a href="#" class="text-white"><i class="bi bi-arrow-right-square"></i> Chính sách bảo hành</a></li>
-                          <li><a href="#" class="text-white"><i class="bi bi-arrow-right-square"></i> Chính sách vận chuyển</a></li>
+                          <li><a href="{% url 'intro' %}" class="text-white"><i class="bi bi-arrow-right-square"></i> Chính sách mua hàng</a></li>
+                          <li><a href="{% url 'guarantee' %}" class="text-white"><i class="bi bi-arrow-right-square"></i> Chính sách bảo hành</a></li>
+                          <li><a href="{% url 'transport' %}" class="text-white"><i class="bi bi-arrow-right-square"></i> Chính sách vận chuyển</a></li>
                       </ul>
                   </div>
       
@@ -216,5 +268,29 @@
       </footer>
       
         <script src="{%static 'app/js/cart.js'%}"></script>
+        <script>
+          function toggleMenu() {
+              var menu = document.getElementById("menuDropdown");
+              menu.style.display = (menu.style.display === "block") ? "none" : "block";
+          }
+      
+          function toggleSubMenu(event) {
+              event.preventDefault();
+              event.stopPropagation();
+              var submenu = document.getElementById("phoneMenu");
+              submenu.style.display = (submenu.style.display === "flex") ? "none" : "flex";
+          }
+      
+          document.addEventListener("click", function(event) {
+              var menu = document.getElementById("menuDropdown");
+              var submenu = document.getElementById("phoneMenu");
+              var button = document.querySelector(".menu-button");
+      
+              if (!menu.contains(event.target) && !button.contains(event.target)) {
+                  menu.style.display = "none";
+                  submenu.style.display = "none";
+              }
+          });
+      </script>
     </body>
 </html>

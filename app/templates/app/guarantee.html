@@ -1,0 +1,227 @@
+{% extends 'app/base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        {% block guarantee %}
+        <div class="box-element-intro">
+            <div class="policy-container">
+                <h2 style="text-align: center;">CHÍNH SÁCH BẢO HÀNH</h2>
+                <div class="policy-step">
+                    <p>Xin cảm ơn quý khách hàng đã tin tưởng sử dụng sản phẩm và dịch vụ của Neel. Trong quá trình phát triển Neel luôn lấy sự <strong>uy tín, </strong>bảo hành – hậu mãi, tận tâm chu đáo - là yếu tố tiên quyết cho sự phát triển bền vững của công ty. Ngoài các sản phẩm mới được bảo hành theo chính sách riêng của từng hãng.</p>
+                    <p>Thì những sản phẩm do Neel nhập khẩu, sản phẩm qua sử dụng sẽ được bảo hành theo chính sách bảo hành lên đến 06 tháng tại Neel. Với chế độ Bảo hành phần cứng lên đến 06 tháng – 30 ngày không lỗi cũng đổi thoải mái, lên đời <strong>miễn phí</strong> chỉ cần bù thêm chênh lệch, <strong></strong>thích là đổi không cần lý do.</p>
+                    <p>Hy vọng sẽ làm quý khách hài lòng hơn trong quá trình sử dụng sản phẩm tại Neel.</p>
+                </div>
+                <div class="policy-step">
+                    <p>*LƯU Ý KHI BẢO HÀNH: </p>
+                    <P>– Địa chỉ tiếp nhận bảo hành: Toàn bộ Hệ thống Showroom Neel </P>
+                </div>
+                <div class="policy-step">
+                    <strong>A. CỤ THỂ ĐỐI VỚI TỪN SẢN PHẨM</strong>
+                    <div class="warranty-box">
+                        <div class="warranty-header" onclick="toggleWarranty()">
+                            1. ĐIỆN THOẠI, MÁY TÍNH BẢNG, MACBOOK, ĐỒNG HỒ THÔNG MINH, PHỤ KIỆN MỚI
+                            <i class="bi bi-chevron-double-down"></i>
+                        </div>
+                        <div class="warranty-content">
+                            <h3>CÁC ĐIỀU KHOẢN BẢO HÀNH CHI TIẾT</h3>
+                            <ul>
+                                <li><strong>1.</strong> Chỉ nhận bảo hành, đổi và nhập lại sản phẩm sau 13h00 hàng ngày (bắt buộc mang theo Phiếu bàn giao hình thức máy).</li>
+                                <li><strong>2.</strong> Sản phẩm được đổi hoặc bảo hành khi đáp ứng đủ điều kiện bảo hành...</li>
+                                <li><strong>3.</strong> Không bảo hành với trường hợp máy có dấu hiệu ngấm nước hoặc bị từ chối bảo hành.</li>
+                                <li><strong>4.</strong> Công ty không chịu trách nhiệm đổi trả khi máy có dấu hiệu rơi vỡ, cong vênh.</li>
+                                <li><strong>5.</strong> Quý khách kiểm tra sản phẩm chắc chắn không bị khóa iCloud, Samsung account...</li>
+                                <li><strong>6.</strong> Sản phẩm được nhập lại với bất kỳ lý do gì sẽ có định giá thỏa thuận.</li>
+                            </ul>
+                            <div class="update-time">
+                                Cập nhật 22/10/2024
+                            </div>
+                        </div>
+                    </div>
+                    <div class="warranty-box">
+                        <div class="warranty-header" onclick="toggleWarranty()">
+                            2. ĐIỆN THOẠI, MÁY TÍNH BẢNG, MACBOOK, ĐỒNG HỒ THÔNG MINH, PHỤ KIỆN QUA SỬ DỤNG
+                            <i class="bi bi-chevron-double-down"></i>
+                        </div>
+                        <div class="warranty-content">
+                            <h3>CÁC ĐIỀU KHOẢN BẢO HÀNH CHI TIẾT</h3>
+                            <ul>
+                                <li><strong>1.</strong> Chỉ nhận bảo hành, đổi và nhập lại sản phẩm sau 13h00 hàng ngày (bắt buộc mang theo Phiếu bàn giao hình thức máy).</li>
+                                <li><strong>2.</strong> Sản phẩm được đổi hoặc bảo hành khi đáp ứng đủ điều kiện bảo hành...</li>
+                                <li><strong>3.</strong> Không bảo hành với trường hợp máy có dấu hiệu ngấm nước hoặc bị từ chối bảo hành.</li>
+                                <li><strong>4.</strong> Công ty không chịu trách nhiệm đổi trả khi máy có dấu hiệu rơi vỡ, cong vênh.</li>
+                                <li><strong>5.</strong> Quý khách kiểm tra sản phẩm chắc chắn không bị khóa iCloud, Samsung account...</li>
+                                <li><strong>6.</strong> Sản phẩm được nhập lại với bất kỳ lý do gì sẽ có định giá thỏa thuận.</li>
+                            </ul>
+                            <div class="update-time">
+                                Cập nhật 22/10/2024
+                            </div>
+                        </div>
+                    </div>
+                    <div class="warranty-box">
+                        <div class="warranty-header" onclick="toggleWarranty()">
+                            3. THIẾT BỊ NHÀ THÔNG MINH
+                            <i class="bi bi-chevron-double-down"></i>
+                        </div>
+                        <div class="warranty-content">
+                            <h3>CÁC ĐIỀU KHOẢN BẢO HÀNH CHI TIẾT</h3>
+                            <ul>
+                                <li><strong>1.</strong> Chỉ nhận bảo hành, đổi và nhập lại sản phẩm sau 13h00 hàng ngày (bắt buộc mang theo Phiếu bàn giao hình thức máy).</li>
+                                <li><strong>2.</strong> Sản phẩm được đổi hoặc bảo hành khi đáp ứng đủ điều kiện bảo hành...</li>
+                                <li><strong>3.</strong> Không bảo hành với trường hợp máy có dấu hiệu ngấm nước hoặc bị từ chối bảo hành.</li>
+                                <li><strong>4.</strong> Công ty không chịu trách nhiệm đổi trả khi máy có dấu hiệu rơi vỡ, cong vênh.</li>
+                                <li><strong>5.</strong> Quý khách kiểm tra sản phẩm chắc chắn không bị khóa iCloud, Samsung account...</li>
+                                <li><strong>6.</strong> Sản phẩm được nhập lại với bất kỳ lý do gì sẽ có định giá thỏa thuận.</li>
+                            </ul>
+                            <div class="update-time">
+                                Cập nhật 22/10/2024
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="policy-step">
+                    <strong>B.QUYỀN LỢI CÁC GÓI BẢO HÀNH</strong>
+                    <div class="warranty-box">
+                        <div class="warranty-header" onclick="toggleWarranty()">
+                            GÓI BẢO HÀNH 1 NĂM 1 ĐỔI 1
+                            <i class="bi bi-chevron-double-down"></i>
+                        </div>
+                        <div class="warranty-content">
+                            <h3>CÁC ĐIỀU KHOẢN BẢO HÀNH CHI TIẾT</h3>
+                            <ul>
+                                <li><strong>1.</strong> Chỉ nhận bảo hành, đổi và nhập lại sản phẩm sau 13h00 hàng ngày (bắt buộc mang theo Phiếu bàn giao hình thức máy).</li>
+                                <li><strong>2.</strong> Sản phẩm được đổi hoặc bảo hành khi đáp ứng đủ điều kiện bảo hành...</li>
+                                <li><strong>3.</strong> Không bảo hành với trường hợp máy có dấu hiệu ngấm nước hoặc bị từ chối bảo hành.</li>
+                                <li><strong>4.</strong> Công ty không chịu trách nhiệm đổi trả khi máy có dấu hiệu rơi vỡ, cong vênh.</li>
+                                <li><strong>5.</strong> Quý khách kiểm tra sản phẩm chắc chắn không bị khóa iCloud, Samsung account...</li>
+                                <li><strong>6.</strong> Sản phẩm được nhập lại với bất kỳ lý do gì sẽ có định giá thỏa thuận.</li>
+                            </ul>
+                            <div class="update-time">
+                                Cập nhật 22/10/2024
+                            </div>
+                        </div>
+                    </div>
+                    <div class="warranty-box">
+                        <div class="warranty-header" onclick="toggleWarranty()">
+                            GÓI BẢO HÀNH 1 NĂM 1 ĐỔI 1 SVIP
+                            <i class="bi bi-chevron-double-down"></i>
+                        </div>
+                        <div class="warranty-content">
+                            <h3>CÁC ĐIỀU KHOẢN BẢO HÀNH CHI TIẾT</h3>
+                            <ul>
+                                <li><strong>1.</strong> Chỉ nhận bảo hành, đổi và nhập lại sản phẩm sau 13h00 hàng ngày (bắt buộc mang theo Phiếu bàn giao hình thức máy).</li>
+                                <li><strong>2.</strong> Sản phẩm được đổi hoặc bảo hành khi đáp ứng đủ điều kiện bảo hành...</li>
+                                <li><strong>3.</strong> Không bảo hành với trường hợp máy có dấu hiệu ngấm nước hoặc bị từ chối bảo hành.</li>
+                                <li><strong>4.</strong> Công ty không chịu trách nhiệm đổi trả khi máy có dấu hiệu rơi vỡ, cong vênh.</li>
+                                <li><strong>5.</strong> Quý khách kiểm tra sản phẩm chắc chắn không bị khóa iCloud, Samsung account...</li>
+                                <li><strong>6.</strong> Sản phẩm được nhập lại với bất kỳ lý do gì sẽ có định giá thỏa thuận.</li>
+                            </ul>
+                            <div class="update-time">
+                                Cập nhật 22/10/2024
+                            </div>
+                        </div>
+                    </div>
+                    <div class="warranty-box">
+                        <div class="warranty-header" onclick="toggleWarranty()">
+                            GÓI BẢO HÀNH 2 NĂM 1 ĐỔI 1
+                            <i class="bi bi-chevron-double-down"></i>
+                        </div>
+                        <div class="warranty-content">
+                            <h3>CÁC ĐIỀU KHOẢN BẢO HÀNH CHI TIẾT</h3>
+                            <ul>
+                                <li><strong>1.</strong> Chỉ nhận bảo hành, đổi và nhập lại sản phẩm sau 13h00 hàng ngày (bắt buộc mang theo Phiếu bàn giao hình thức máy).</li>
+                                <li><strong>2.</strong> Sản phẩm được đổi hoặc bảo hành khi đáp ứng đủ điều kiện bảo hành...</li>
+                                <li><strong>3.</strong> Không bảo hành với trường hợp máy có dấu hiệu ngấm nước hoặc bị từ chối bảo hành.</li>
+                                <li><strong>4.</strong> Công ty không chịu trách nhiệm đổi trả khi máy có dấu hiệu rơi vỡ, cong vênh.</li>
+                                <li><strong>5.</strong> Quý khách kiểm tra sản phẩm chắc chắn không bị khóa iCloud, Samsung account...</li>
+                                <li><strong>6.</strong> Sản phẩm được nhập lại với bất kỳ lý do gì sẽ có định giá thỏa thuận.</li>
+                            </ul>
+                            <div class="update-time">
+                                Cập nhật 22/10/2024
+                            </div>
+                        </div>
+                    </div>
+                    <div class="warranty-box">
+                        <div class="warranty-header" onclick="toggleWarranty()">
+                            GÓI BẢO HÀNH 2 NĂM 1 ĐỔI 1 SVIP
+                            <i class="bi bi-chevron-double-down"></i>
+                        </div>
+                        <div class="warranty-content">
+                            <h3>CÁC ĐIỀU KHOẢN BẢO HÀNH CHI TIẾT</h3>
+                            <ul>
+                                <li><strong>1.</strong> Chỉ nhận bảo hành, đổi và nhập lại sản phẩm sau 13h00 hàng ngày (bắt buộc mang theo Phiếu bàn giao hình thức máy).</li>
+                                <li><strong>2.</strong> Sản phẩm được đổi hoặc bảo hành khi đáp ứng đủ điều kiện bảo hành...</li>
+                                <li><strong>3.</strong> Không bảo hành với trường hợp máy có dấu hiệu ngấm nước hoặc bị từ chối bảo hành.</li>
+                                <li><strong>4.</strong> Công ty không chịu trách nhiệm đổi trả khi máy có dấu hiệu rơi vỡ, cong vênh.</li>
+                                <li><strong>5.</strong> Quý khách kiểm tra sản phẩm chắc chắn không bị khóa iCloud, Samsung account...</li>
+                                <li><strong>6.</strong> Sản phẩm được nhập lại với bất kỳ lý do gì sẽ có định giá thỏa thuận.</li>
+                            </ul>
+                            <div class="update-time">
+                                Cập nhật 22/10/2024
+                            </div>
+                        </div>
+                    </div>
+                    <div class="warranty-box">
+                        <div class="warranty-header" onclick="toggleWarranty()">
+                            GÓI BẢO HÀNH RƠI VỠ - NGẤM NƯỚC
+                            <i class="bi bi-chevron-double-down"></i>
+                        </div>
+                        <div class="warranty-content">
+                            <h3>CÁC ĐIỀU KHOẢN BẢO HÀNH CHI TIẾT</h3>
+                            <ul>
+                                <li><strong>1.</strong> Chỉ nhận bảo hành, đổi và nhập lại sản phẩm sau 13h00 hàng ngày (bắt buộc mang theo Phiếu bàn giao hình thức máy).</li>
+                                <li><strong>2.</strong> Sản phẩm được đổi hoặc bảo hành khi đáp ứng đủ điều kiện bảo hành...</li>
+                                <li><strong>3.</strong> Không bảo hành với trường hợp máy có dấu hiệu ngấm nước hoặc bị từ chối bảo hành.</li>
+                                <li><strong>4.</strong> Công ty không chịu trách nhiệm đổi trả khi máy có dấu hiệu rơi vỡ, cong vênh.</li>
+                                <li><strong>5.</strong> Quý khách kiểm tra sản phẩm chắc chắn không bị khóa iCloud, Samsung account...</li>
+                                <li><strong>6.</strong> Sản phẩm được nhập lại với bất kỳ lý do gì sẽ có định giá thỏa thuận.</li>
+                            </ul>
+                            <div class="update-time">
+                                Cập nhật 22/10/2024
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="policy-step">
+                    <strong>C.CHÍNH SÁCH NHẬP LẠI LÊN ĐỜI</strong>
+                    <p>Với những máy cũ (dù mua tại Neel hay không) hình thức còn đẹp, chưa thay thế linh kiện, Neel sẽ hỗ trợ <strong>thu cũ đổi mới</strong> trợ lên tới <strong>2.500.000đ</strong>cho quý khách hàng, đảm bảo khách hàng lên đời máy mới với chi phí rẻ nhất.</p>
+                    <p>Để đảm bảo đưa ra mức giá lên đời chính xác nhất, kính mời quý khách hàng mang máy của mình qua Neel để kỹ thuật hỗ trợ. Tổng đài - nhấn phím 2 gặp bộ phận kỹ thuật: 02466819779</p>
+                </div>
+                </div>
+            </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    let headers = document.querySelectorAll(".warranty-header");
+            
+                    headers.forEach(header => {
+                        header.addEventListener("click", function() {
+                            let content = this.nextElementSibling; // Lấy phần nội dung ngay sau tiêu đề
+                            let icon = this.querySelector(".bi.bi-chevron-double-down");
+            
+                            // Kiểm tra trạng thái hiển thị
+                            if (content.style.display === "none" || content.style.display === "") {
+                                content.style.display = "block";
+                                icon.classList.add("rotated"); // Thêm class để xoay mũi tên
+                            } else {
+                                content.style.display = "none";
+                                icon.classList.remove("rotated"); // Xóa class xoay mũi tên
+                            }
+                        });
+                    });
+                });
+            </script>          
+        {% endblock guarantee %}
+    </body>
+</html>

@@ -1,0 +1,35 @@
+{% extends 'app/base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        {% block transport %}
+        <div class="box-element-intro">
+            <div class="policy-container">
+                <h2 style="text-align: center;">CHÍNH SÁCH VẬN CHUYỂN</h2>
+                <div class="policy-step">
+                    <strong>KHU VỰC HÀ NỘI</strong>
+                    <p>Miễn phí giao hàng bán kính 3km. Khách hàng thanh toán trực tiếp khi nhận hàng. Nếu khách hàng không hài lòng với chất lượng sản phẩm được giao có thể không nhận hàng và không chịu bất cứ chi phí nào. Các sản phẩm phụ kiện phụ thu phí ship tương đương với đơn vị giao hàng ngoài</p>
+                </div>
+                <div class="policy-step">
+                    <strong>CÁC TỈNH THÀNH KHÁC</strong>
+                    <p><strong>Qua Viettelpost: </strong>Khách hàng chỉ cần thêm 2.2% phí bảo hiểm hàng hóa giá trị cao, để trong trường hợp rơi vỡ hoặc thất lạc đơn vị vận chuyển cũng như Neel sẽ chịu hoàn toàn trách nhiệm về đơn hàng này. </p>
+                    <p><strong>Qua Xe khách: </strong>Nếu khách hàng có xe khách quen (Văn Minh, Hải Vân...), đi về trong ngày, hoạt động ở các bến xe Giáp Bát, Mỹ Đình...Neel sẽ hỗ trợ ship ra Nhà xe theo thông tin khách hàng cung cấp. Khi nhận hàng anh chị chỉ cần thanh toán phí ship hàng cho nhà xe.</p>
+                </div>
+            </div>
+        </div>
+        {% endblock transport %}
+    </body>
+</html>

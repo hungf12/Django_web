@@ -234,3 +234,30 @@ def store_list(request):
     return render(request, 'app/store_list.html',context)
     # stores = Store.objects.all()
     # return render(request, 'app/store_list.html', {'stores': stores}) 
+
+
+def Transport(request):
+    if request.user.is_authenticated:
+        customer = request.user
+        order, created = Order.objects.get_or_create(customer=customer,complete = False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {'get_cart_items':0,'get_cart_total':0}
+        cartItems = order['get_cart_items']
+    context = {'items': items,'order':order, 'cartItems': cartItems}
+    return render(request, "app/transport.html",context)
+
+def Guarantee(request):
+    if request.user.is_authenticated:
+        customer = request.user
+        order, created = Order.objects.get_or_create(customer=customer,complete = False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {'get_cart_items':0,'get_cart_total':0}
+        cartItems = order['get_cart_items']
+    context = {'items': items,'order':order, 'cartItems': cartItems}
+    return render(request, "app/guarantee.html",context)
