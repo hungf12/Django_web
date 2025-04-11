@@ -59,7 +59,9 @@
                     </div>
                 </div>
                 <hr>
-                <input id="form-button" class="btn btn-success btn-block" type="submit" value="Tiếp tục">
+                <!-- <input id="form-button" class="btn btn-success btn-block" type="submit" value="Tiếp tục"> -->
+                 <!-- <a href="{% url 'cart' %}" class="btn-outline-success bt">Tiếp tục</a> -->
+                <button id="form-button" class="btn btn-success btn-block"><a href="{% url 'payment_method' %}">Tiếp tục</a></button>
             </form>
         </div>
     </div>
@@ -84,6 +86,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    
+</script>
 
 <script>
     $(document).ready(function() {

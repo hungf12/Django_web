@@ -321,6 +321,14 @@ button:hover, .btn:hover {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+.box-element-method {
+    padding: 30px;
+    border: 1px solid #ddd;
+    background-color: orange;
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
 
 .button-product-detail {
     display: flex;
@@ -478,4 +486,36 @@ footer {
     display: flex;
     align-items: center;
     gap: 15px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+}
+.logo-container {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+.logo {
+    color: #EE4D2D;
+    font-size: 24px;
+    font-weight: bold;
+}
+.logo img {
+    width: 40px;
+    margin-right: 10px;
+}
+.divider {
+    height: 24px;
+    border-left: 1px solid #ddd;
+    margin: 0 10px;
+}
+.text {
+    font-size: 18px;
+    color: #EE4D2D;
 }
