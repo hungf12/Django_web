@@ -519,3 +519,12 @@ body {
     font-size: 18px;
     color: #EE4D2D;
 }
+
+.footer-text{
+    background-color: #4f868c;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+}
