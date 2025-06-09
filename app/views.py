@@ -101,8 +101,8 @@ def search_items(request):
     result = []
 
     if query:
-        query_name = f"kết quả trả về cho sản phẩm {query}"
-        result = Product.objects.filter(Q(name__icontains=query))[:1]
+        query_name = f"Các dòng máy {query} hiện đang có"
+        result = Product.objects.filter(Q(name__icontains=query))
     else:
         result = Product.objects.all()
         query_name = "Tất cả sản phẩm"

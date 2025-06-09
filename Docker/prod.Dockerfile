@@ -1,5 +1,5 @@
 # Sử dụng Python image chính thức
-FROM python:3.12.4
+FROM python:3.9.13
 
 # Đặt thư mục làm việc
 WORKDIR /app
