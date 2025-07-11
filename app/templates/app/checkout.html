@@ -3,125 +3,55 @@
 {% load filters %}
 {% block content_checkout %}
 
-<!-- Thêm thư viện Select2 -->
-<!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script> -->
-
-<div class="row" style="width:100%">
-    <div class="col-lg-6">
-        <div class="box-element" id="form-wrapper">
-            <form id="form">
-                <div id="user-info">
-                    <hr>
-                    <p>Thông tin mua hàng</p>
-                    <hr>
-                    <div class="form-field">
-                        <input class="form-control" type="text" name="name" placeholder="Họ và tên">
-                    </div>
-                    <div class="form-field">
-                        <input class="form-control" type="email" name="email" placeholder="Email">
-                    </div>
-                    <div class="form-field">
-                        <input class="form-control" type="text" name="phonenumber" placeholder="Số điện thoại">
-                    </div>
-                    <div class="radio-group">
-                        <label>Giới tính:</label>
-                        <input type="radio" id="male" name="gender" value="Nam"> <label for="male">Nam</label>
-                        <input type="radio" id="female" name="gender" value="Nữ"> <label for="female">Nữ</label>
-                    </div>
-                </div>
+<div class="container my-5">
+    <div class="row">
+        <!-- Cột chọn phương thức thanh toán -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm p-4 h-100">
+                <h4 class="mb-4 text-primary">Chọn phương thức thanh toán</h4>
                 
-                <div id="shipping-info">
-                    <hr>
-                    <p>Chọn cách thức nhận hàng:</p>
-                    <hr>
-                    <div class="form-field">
-                        <label for="city">Tỉnh/Thành phố</label>
-                        <select id="city" class="form-control">
-                            <option value="">Chọn Tỉnh/Thành phố</option>
-                            <option value="An Giang">An Giang</option>
-                            <option value="Bà Rịa - Vũng Tàu">Bà Rịa - Vũng Tàu</option>
-                            <option value="Hà Nội">Hà Nội</option>
-                            <option value="Hồ Chí Minh">Hồ Chí Minh</option>
-                        </select>
-                        
-                        <label for="district" class="mt-3">Quận/Huyện</label>
-                        <select id="district" class="form-control">
-                            <option value="">Chọn Quận/Huyện</option>
-                        </select>
+                <div class="d-grid gap-3">
+                    <a class="btn btn-success btn-lg" href="{% url 'create_order' %}">
+                        <i class="bi bi-wallet2 me-2"></i> Thanh toán qua MoMo
+                    </a>
+                    <!-- Có thể thêm các phương thức khác nếu muốn -->
+                    <!-- <a class="btn btn-outline-primary btn-lg" href="#">Chuyển khoản ngân hàng</a>
+                    <a class="btn btn-outline-secondary btn-lg" href="#">Thanh toán khi nhận hàng (COD)</a> -->
+                </div>
+
+                <div class="mt-4">
+                    <a class="btn btn-outline-dark" href="{% url 'cart' %}">
+                        <i class="bi bi-cart me-2"></i> Quay lại giỏ hàng
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột hiển thị sản phẩm đã mua -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm p-4 h-100">
+                <h4 class="mb-4 text-success">Sản phẩm đã mua</h4>
+                
+                {% for item in items %}
+                <div class="cart-row d-flex align-items-center mb-3 border-bottom pb-2">
+                    <div class="me-3" style="flex: 1">
+                        <img src="{{ item.product.ImageURL }}" class="img-fluid rounded" style="max-height: 80px;">
                     </div>
-                    <div class="form-field">
-                        <input class="form-control" type="text" name="ward" placeholder="Phường/Xã">
-                    </div>
-                    <div class="form-field">
-                        <input class="form-control" type="text" name="address" placeholder="Số nhà/Tên đường">
+                    <div style="flex: 2">
+                        <p class="mb-1 fw-bold">{{ item.product.name }}</p>
+                        <small>Giá: {{ item.product.price|currency }} VND</small><br>
+                        <small>Số lượng: {{ item.quantity }}</small>
                     </div>
                 </div>
-                <hr>
-                <!-- <input id="form-button" class="btn btn-success btn-block" type="submit" value="Tiếp tục"> -->
-                 <!-- <a href="{% url 'cart' %}" class="btn-outline-success bt">Tiếp tục</a> -->
-                <button id="form-button" class="btn btn-success btn-block"><a href="{% url 'payment_method' %}">Tiếp tục</a></button>
-            </form>
-        </div>
-    </div>
-    
-    
-    <div class="col-lg-6">
-        <div class="box-element">
-            <a class=" btn-outline-success btn" href="{% url 'cart' %}"><i class="bi bi-cart"></i> Giỏ hàng</a>
-            <hr>
-            <h3>Sản phẩm đã mua</h3>
-            <hr>
-            {% for item in items %}
-            <div class="cart-row">
-                <div style="flex:2"><img class="row-image" src="{{ item.product.ImageURL }}"></div>
-                <div style="flex:2"><p>{{ item.product.name }}</p></div>
-                <div style="flex:1"><p>{{ item.product.price|currency }} VND</p></div>
-                <div style="flex:1"><p>{{ item.quantity }}</p></div>
+                {% endfor %}
+
+                <div class="mt-4">
+                    <h5>Số lượng sản phẩm: <span class="text-primary">{{ order.get_cart_items }}</span></h5>
+                    <h5>Thành tiền: <span class="text-danger">{{ order.get_cart_total|currency }} VND</span></h5>
+                </div>
             </div>
-            {% endfor %}
-            <h5 style="float: left;">Số lượng: {{ order.get_cart_items }}</h5>
-            <h5>Thành tiền: {{ order.get_cart_total|currency }} VND</h5>
         </div>
     </div>
 </div>
-
-<script>
-    
-</script>
-
-<script>
-    $(document).ready(function() {
-        $("#city, #district").select2({ placeholder: "Chọn một mục", allowClear: true });
-
-        var districts = {
-            "An Giang": ["Long Xuyên", "Châu Đốc", "Tân Châu"],
-            "Bà Rịa - Vũng Tàu": ["Bà Rịa", "Vũng Tàu", "Xuyên Mộc"],
-            "Hà Nội": ["Ba Đình", "Hoàn Kiếm", "Cầu Giấy", "Thanh Xuân", "Hai Bà Trưng"],
-            "Hồ Chí Minh": ["Quận 1", "Quận 2", "Quận 3", "Quận 7", "Thủ Đức"]
-        };
-
-        $("#city").change(function() {
-            var city = $(this).val();
-            var districtSelect = $("#district");
-
-            // Xóa danh sách cũ và đặt lại tùy chọn mặc định
-            districtSelect.empty().append('<option value="">Chọn Quận/Huyện</option>');
-
-            // Kiểm tra nếu có quận/huyện thuộc thành phố đã chọn
-            if (districts[city]) {
-                $.each(districts[city], function(index, district) {
-                    districtSelect.append('<option value="' + district + '">' + district + '</option>');
-                });
-            }
-
-            // Cập nhật lại giao diện Select2 sau khi thêm options mới
-            districtSelect.val(null).trigger('change');
-        });
-    });
-	console.log(typeof jQuery)
-	console.log(typeof $.fn.select2)
-</script>
 
 {% endblock content_checkout %}

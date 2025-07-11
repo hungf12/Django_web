@@ -1,0 +1,31 @@
+<!-- templates/payments/create_order.html -->
+<h2>Tạo đơn hàng</h2>
+
+{% if message %}
+  <p style="color: red;">{{ message }}</p>
+{% else %}
+  <form method="post">
+    {% csrf_token %}
+    <h3>Sản phẩm trong đơn hàng:</h3>
+    <table border="1">
+      <tr>
+        <th>Sản phẩm</th>
+        <th>Giá</th>
+        <th>Số lượng</th>
+        <th>Tổng</th>
+      </tr>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.product.name }}</td>
+        <td>{{ item.product.price|floatformat:0 }} đ</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.get_total|floatformat:0 }} đ</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <h4>Tổng tiền: <strong>{{ total|floatformat:0 }} VNĐ</strong></h4>
+
+    <button type="submit">Tạo và Thanh toán bằng MoMo</button>
+  </form>
+{% endif %}

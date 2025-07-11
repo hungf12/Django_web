@@ -68,7 +68,7 @@ ROOT_URLCONF = 'webbanhang.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -142,3 +142,13 @@ STATICFILES_DIRS = [
 ]
 MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'app/static/images')
+
+# AUTH_USER_MODEL = 'app.CustomUser'
+
+
+MOMO_PARTNER_CODE = "MOMO"
+MOMO_ACCESS_KEY = "F8BBA842ECF85"
+MOMO_SECRET_KEY = "K951B6PE1waDMi640xX08PD3vg6EkVlz"
+MOMO_ENDPOINT = "https://test-payment.momo.vn/v2/gateway/api/create"
+MOMO_RETURN_URL = "https://yourdomain.com/"  # Không quan trọng với QR
+MOMO_NOTIFY_URL = "https://yourdomain.com/payments/notify/"

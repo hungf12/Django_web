@@ -6,6 +6,22 @@ import json
 from django .contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+
+import uuid
+import json
+import hmac
+import hashlib
+import requests
+from django.shortcuts import render, redirect, get_object_or_404
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse, HttpResponse
+from .models import Payment
+
+from django.shortcuts import render, redirect
+from .models import Order, OrderItem, Product, Payment
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 def register(request):
     form = CreateUserForm()
@@ -274,3 +290,96 @@ def Payment_method(request):
         cartItems = order['get_cart_items']
     context = {'items': items,'order':order, 'cartItems': cartItems}
     return render(request, "app/payment_method.html",context)
+
+
+def create_order_view(request):
+    if request.method == "POST":
+        amount = int(request.POST["amount"])
+        order_id = str(uuid.uuid4())[:18]
+        payment = Payment.objects.create(order_id=order_id, amount=amount)
+        return redirect("payments:momo_create", order_id=order_id)
+    return render(request, "payments/create_order.html")
+
+def momo_create_payment(request, order_id):
+    payment = get_object_or_404(Payment, order_id=order_id)
+    request_id = str(uuid.uuid4())
+
+    raw_signature = f"accessKey={settings.MOMO_ACCESS_KEY}&amount={int(payment.amount)}&extraData=&ipnUrl={settings.MOMO_NOTIFY_URL}&orderId={payment.order_id}&orderInfo=Thanh toán đơn hàng {payment.order_id}&partnerCode={settings.MOMO_PARTNER_CODE}&redirectUrl={settings.MOMO_RETURN_URL}&requestId={request_id}&requestType=captureWallet"
+
+    signature = hmac.new(
+        bytes(settings.MOMO_SECRET_KEY, 'utf-8'),
+        bytes(raw_signature, 'utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+
+    data = {
+        "partnerCode": settings.MOMO_PARTNER_CODE,
+        "accessKey": settings.MOMO_ACCESS_KEY,
+        "requestId": request_id,
+        "amount": str(int(payment.amount)),
+        "orderId": payment.order_id,
+        "orderInfo": f"Thanh toán đơn hàng {payment.order_id}",
+        "redirectUrl": settings.MOMO_RETURN_URL,
+        "ipnUrl": settings.MOMO_NOTIFY_URL,
+        "extraData": "",
+        "requestType": "captureWallet",
+        "signature": signature,
+        "lang": "vi"
+    }
+
+    response = requests.post(settings.MOMO_ENDPOINT, json=data)
+    res_data = response.json()
+
+    return render(request, "payments/momo_qr.html", {"payUrl": res_data.get("payUrl", "#")})
+
+@csrf_exempt
+def momo_notify_view(request):
+    data = json.loads(request.body)
+    order_id = data.get("orderId")
+    result_code = data.get("resultCode")
+
+    if result_code == 0:
+        payment = Payment.objects.get(order_id=order_id)
+        payment.is_paid = True
+        payment.save()
+        return HttpResponse("Thanh toán thành công", status=200)
+    return HttpResponse("Lỗi thanh toán", status=400)
+
+
+
+# views.py
+@login_required
+def create_order_view(request):
+    user = request.user
+    try:
+        # Lấy đơn hàng chưa thanh toán (giỏ hàng hiện tại)
+        order = Order.objects.get(customer=user, complete=False)
+    except Order.DoesNotExist:
+        order = None
+
+    if not order or order.orderitem_set.count() == 0:
+        return render(request, 'payments/create_order.html', {'message': 'Giỏ hàng trống!'})
+
+    # Tính tổng tiền
+    items = order.orderitem_set.all()
+    total = order.get_cart_total()
+
+    if request.method == "POST":
+        # Gắn cờ hoàn tất đơn hàng
+        order.complete = True
+        order.save()
+
+        # Tạo thông tin thanh toán
+        payment = Payment.objects.create(
+            order_id=str(order.id),
+            amount=total
+        )
+
+        return redirect('payments:momo_create', order_id=order.id)
+
+    return render(request, 'payments/create_order.html', {
+        'order': order,
+        'items': items,
+        'total': total
+    })
+
