@@ -17,6 +17,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 from .models import Payment
+import time
 
 from django.shortcuts import render, redirect
 from .models import Order, OrderItem, Product, Payment
@@ -292,62 +293,14 @@ def Payment_method(request):
     return render(request, "app/payment_method.html",context)
 
 
-def create_order_view(request):
-    if request.method == "POST":
-        amount = int(request.POST["amount"])
-        order_id = str(uuid.uuid4())[:18]
-        payment = Payment.objects.create(order_id=order_id, amount=amount)
-        return redirect("payments:momo_create", order_id=order_id)
-    return render(request, "payments/create_order.html")
+# def create_order_view(request):
+#     if request.method == "POST":
+#         amount = int(request.POST["amount"])
+#         order_id = str(uuid.uuid4())[:18]
+#         payment = Payment.objects.create(order_id=order_id, amount=amount)
+#         return redirect("payments:momo_create", order_id=order_id)
+#     return render(request, "payments/create_order.html")
 
-def momo_create_payment(request, order_id):
-    payment = get_object_or_404(Payment, order_id=order_id)
-    request_id = str(uuid.uuid4())
-
-    raw_signature = f"accessKey={settings.MOMO_ACCESS_KEY}&amount={int(payment.amount)}&extraData=&ipnUrl={settings.MOMO_NOTIFY_URL}&orderId={payment.order_id}&orderInfo=Thanh toán đơn hàng {payment.order_id}&partnerCode={settings.MOMO_PARTNER_CODE}&redirectUrl={settings.MOMO_RETURN_URL}&requestId={request_id}&requestType=captureWallet"
-
-    signature = hmac.new(
-        bytes(settings.MOMO_SECRET_KEY, 'utf-8'),
-        bytes(raw_signature, 'utf-8'),
-        hashlib.sha256
-    ).hexdigest()
-
-    data = {
-        "partnerCode": settings.MOMO_PARTNER_CODE,
-        "accessKey": settings.MOMO_ACCESS_KEY,
-        "requestId": request_id,
-        "amount": str(int(payment.amount)),
-        "orderId": payment.order_id,
-        "orderInfo": f"Thanh toán đơn hàng {payment.order_id}",
-        "redirectUrl": settings.MOMO_RETURN_URL,
-        "ipnUrl": settings.MOMO_NOTIFY_URL,
-        "extraData": "",
-        "requestType": "captureWallet",
-        "signature": signature,
-        "lang": "vi"
-    }
-
-    response = requests.post(settings.MOMO_ENDPOINT, json=data)
-    res_data = response.json()
-
-    return render(request, "payments/momo_qr.html", {"payUrl": res_data.get("payUrl", "#")})
-
-@csrf_exempt
-def momo_notify_view(request):
-    data = json.loads(request.body)
-    order_id = data.get("orderId")
-    result_code = data.get("resultCode")
-
-    if result_code == 0:
-        payment = Payment.objects.get(order_id=order_id)
-        payment.is_paid = True
-        payment.save()
-        return HttpResponse("Thanh toán thành công", status=200)
-    return HttpResponse("Lỗi thanh toán", status=400)
-
-
-
-# views.py
 @login_required
 def create_order_view(request):
     user = request.user
@@ -382,4 +335,84 @@ def create_order_view(request):
         'items': items,
         'total': total
     })
+
+
+def momo_create_payment(request, order_id):
+    payment = get_object_or_404(Payment, order_id=order_id)
+    request_id = str(uuid.uuid4())
+
+    # Tạo orderId duy nhất bằng cách thêm timestamp
+    unique_order_id = f"{payment.order_id}_{int(time.time())}"
+
+    # Lưu lại momo_order_id nếu cần
+    payment.momo_order_id = unique_order_id
+    payment.save()
+
+    # Tạo raw signature
+    raw_signature = (
+        f"accessKey={settings.MOMO_ACCESS_KEY}"
+        f"&amount={int(payment.amount)}"
+        f"&extraData="
+        f"&ipnUrl={settings.MOMO_NOTIFY_URL}"
+        f"&orderId={unique_order_id}"
+        f"&orderInfo=Thanh toán đơn hàng {payment.order_id}"
+        f"&partnerCode={settings.MOMO_PARTNER_CODE}"
+        f"&redirectUrl={settings.MOMO_RETURN_URL}"
+        f"&requestId={request_id}"
+        f"&requestType=captureWallet"
+    )
+
+    # Ký SHA256
+    signature = hmac.new(
+        bytes(settings.MOMO_SECRET_KEY, 'utf-8'),
+        bytes(raw_signature, 'utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+
+    # Dữ liệu gửi tới MoMo
+    data = {
+        "partnerCode": settings.MOMO_PARTNER_CODE,
+        "accessKey": settings.MOMO_ACCESS_KEY,
+        "requestId": request_id,
+        "amount": str(int(payment.amount)),
+        "orderId": unique_order_id,
+        "orderInfo": f"Thanh toán đơn hàng {payment.order_id}",
+        "redirectUrl": settings.MOMO_RETURN_URL,
+        "ipnUrl": settings.MOMO_NOTIFY_URL,
+        "extraData": "",
+        "requestType": "captureWallet",
+        "signature": signature,
+        "lang": "vi"
+    }
+
+    # Gửi request
+    response = requests.post(settings.MOMO_ENDPOINT, json=data)
+    res_data = response.json()
+    print("MoMo response:", response.status_code, res_data)
+
+    # Xử lý lỗi trả về từ MoMo
+    if res_data.get("resultCode") != 0:
+        return render(request, "payments/momo_qr.html", {
+            "payUrl": "#",
+            "message": f"Lỗi từ MoMo: {res_data.get('message')}"
+        })
+
+    # Trả về trang chứa QR thanh toán
+    return render(request, "payments/momo_qr.html", {
+        "payUrl": res_data["payUrl"],
+        "message": "Vui lòng quét mã QR để thanh toán."
+    })
+
+@csrf_exempt
+def momo_notify_view(request):
+    data = json.loads(request.body)
+    order_id = data.get("orderId")
+    result_code = data.get("resultCode")
+
+    if result_code == 0:
+        payment = Payment.objects.get(order_id=order_id)
+        payment.is_paid = True
+        payment.save()
+        return HttpResponse("Thanh toán thành công", status=200)
+    return HttpResponse("Lỗi thanh toán", status=400)
 

@@ -150,5 +150,5 @@ MOMO_PARTNER_CODE = "MOMO"
 MOMO_ACCESS_KEY = "F8BBA842ECF85"
 MOMO_SECRET_KEY = "K951B6PE1waDMi640xX08PD3vg6EkVlz"
 MOMO_ENDPOINT = "https://test-payment.momo.vn/v2/gateway/api/create"
-MOMO_RETURN_URL = "https://yourdomain.com/"  # Không quan trọng với QR
-MOMO_NOTIFY_URL = "https://yourdomain.com/payments/notify/"
+MOMO_RETURN_URL = "https://cc7e712d0ea0.ngrok-free.app/payment/return/"
+MOMO_NOTIFY_URL = "https://cc7e712d0ea0.ngrok-free.app/payment/notify/"

@@ -76,10 +76,11 @@ class Store(models.Model):
         return self.name
     
 class Payment(models.Model):
-    order_id = models.CharField(max_length=100, unique=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True)
+    momo_order_id = models.CharField(max_length=150, unique=True, null=True, blank=True) # Gửi qua MoMo
     amount = models.DecimalField(max_digits=10, decimal_places=0)  # MoMo yêu cầu số nguyên
     is_paid = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Order {self.order_id} - {'Đã thanh toán' if self.is_paid else 'Chưa thanh toán'}"
+        return f"Order {self.order.id} - {'Đã thanh toán' if self.is_paid else 'Chưa thanh toán'}"
