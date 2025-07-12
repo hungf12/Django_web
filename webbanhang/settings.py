@@ -152,3 +152,10 @@ MOMO_SECRET_KEY = "K951B6PE1waDMi640xX08PD3vg6EkVlz"
 MOMO_ENDPOINT = "https://test-payment.momo.vn/v2/gateway/api/create"
 MOMO_RETURN_URL = "https://cc7e712d0ea0.ngrok-free.app/payment/return/"
 MOMO_NOTIFY_URL = "https://cc7e712d0ea0.ngrok-free.app/payment/notify/"
+
+
+# VNPay Settings
+VNPAY_TMN_CODE = 'YOUR_VNP_TMNCODE'
+VNPAY_HASH_SECRET = 'YOUR_HASH_SECRET'
+VNPAY_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
+VNPAY_RETURN_URL = 'https://yourdomain.com/payment/vnpay-return/'  # ngrok nếu đang test local

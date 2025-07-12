@@ -1,0 +1,6 @@
+<h2>Xác nhận thanh toán</h2>
+<form method="post">
+  {% csrf_token %}
+  <p>Bạn có chắc chắn muốn thanh toán đơn hàng {{ order.id }} với số tiền {{ total }} VND?</p>
+  <button type="submit">Thanh toán qua VNPay</button>
+</form>

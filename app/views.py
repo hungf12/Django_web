@@ -448,3 +448,63 @@ def cod_payment_view(request):
         return render(request, "payments/success_cod.html", {"order": order})
 
     return render(request, "payments/confirm_cod.html", {"order": order, "total": total})
+
+
+import hashlib
+import hmac
+import urllib.parse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.conf import settings
+from django.utils import timezone
+from .models import Order, Payment  # cập nhật đúng theo app bạn
+
+def vnpay_create_payment(request, order_id):
+    order = get_object_or_404(Order, id=order_id, complete=True)
+    amount = int(order.get_cart_total())  # cần chuyển sang số nguyên
+
+    vnp_params = {
+        'vnp_Version': '2.1.0',
+        'vnp_Command': 'pay',
+        'vnp_TmnCode': settings.VNPAY_TMN_CODE,
+        'vnp_Amount': str(amount * 100),  # nhân 100 theo yêu cầu VNPay
+        'vnp_CurrCode': 'VND',
+        'vnp_TxnRef': f"{order.id}_{int(timezone.now().timestamp())}",  # mã giao dịch duy nhất
+        'vnp_OrderInfo': f"Thanh toán đơn hàng {order.id}",
+        'vnp_OrderType': 'other',
+        'vnp_Locale': 'vn',
+        'vnp_ReturnUrl': settings.VNPAY_RETURN_URL,
+        'vnp_IpAddr': request.META.get('REMOTE_ADDR', '127.0.0.1'),
+        'vnp_CreateDate': timezone.now().strftime('%Y%m%d%H%M%S'),
+    }
+
+    sorted_params = sorted(vnp_params.items())
+    query_string = '&'.join([f"{k}={v}" for k, v in sorted_params])
+    hash_data = '&'.join([f"{k}={v}" for k, v in sorted_params])
+    secure_hash = hmac.new(
+        settings.VNPAY_HASH_SECRET.encode('utf-8'),
+        hash_data.encode('utf-8'),
+        hashlib.sha512
+    ).hexdigest()
+
+    payment_url = f"{settings.VNPAY_URL}?{query_string}&vnp_SecureHash={secure_hash}"
+
+    return redirect(payment_url)
+
+
+
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def vnpay_return_view(request):
+    params = request.GET
+    vnp_TxnRef = params.get('vnp_TxnRef')
+    vnp_ResponseCode = params.get('vnp_ResponseCode')
+
+    if vnp_ResponseCode == '00':  # thanh toán thành công
+        order_id = vnp_TxnRef.split("_")[0]
+        payment = Payment.objects.get(order_id=order_id)
+        payment.is_paid = True
+        payment.save()
+        return render(request, 'payments/vnpay_success.html', {"order_id": order_id})
+    return render(request, 'payments/vnpay_fail.html', {"message": "Thanh toán thất bại."})
+
