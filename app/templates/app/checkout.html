@@ -17,8 +17,10 @@
                     <!-- Có thể thêm các phương thức khác nếu muốn -->
                     <!-- <a class="btn btn-outline-primary btn-lg" href="#">Chuyển khoản ngân hàng</a>
                     <a class="btn btn-outline-secondary btn-lg" href="#">Thanh toán khi nhận hàng (COD)</a> -->
+                    <a class="btn btn-success btn-lg" href="{% url 'cod_payment' %}">
+                        <i class="bi bi-wallet2 me-2"></i> Thanh toán qua tiền mặt
+                    </a>
                 </div>
-
                 <div class="mt-4">
                     <a class="btn btn-outline-dark" href="{% url 'cart' %}">
                         <i class="bi bi-cart me-2"></i> Quay lại giỏ hàng

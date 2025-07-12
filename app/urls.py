@@ -24,5 +24,6 @@ urlpatterns = [
 
     path("create/", views.create_order_view, name="create_order"),
     path("momo/create/<str:order_id>/", views.momo_create_payment, name="momo_create"),
-    path("notify/", views.momo_notify_view, name="momo_notify")
+    path("notify/", views.momo_notify_view, name="momo_notify"),
+    path("payment/cod/", views.cod_payment_view, name="cod_payment")
 ]

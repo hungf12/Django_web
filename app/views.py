@@ -416,3 +416,35 @@ def momo_notify_view(request):
         return HttpResponse("Thanh toán thành công", status=200)
     return HttpResponse("Lỗi thanh toán", status=400)
 
+from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
+from app.models import Order, Payment
+
+@login_required
+def cod_payment_view(request):
+    user = request.user
+    try:
+        order = Order.objects.get(customer=user, complete=False)
+    except Order.DoesNotExist:
+        return render(request, "payments/create_order.html", {"message": "Không tìm thấy đơn hàng!"})
+
+    if order.orderitem_set.count() == 0:
+        return render(request, "payments/create_order.html", {"message": "Giỏ hàng trống!"})
+
+    total = order.get_cart_total()
+
+    if request.method == "POST":
+        # Hoàn tất đơn hàng và tạo payment
+        order.complete = True
+        order.save()
+
+        Payment.objects.create(
+            order=order,
+            amount=total,
+            method="cod",
+            is_paid=False  # Tiền mặt nên chưa thanh toán
+        )
+
+        return render(request, "payments/success_cod.html", {"order": order})
+
+    return render(request, "payments/confirm_cod.html", {"order": order, "total": total})
