@@ -459,17 +459,27 @@ from django.conf import settings
 from django.utils import timezone
 from .models import Order, Payment  # cập nhật đúng theo app bạn
 
+# views.py
 def vnpay_create_payment(request, order_id):
-    order = get_object_or_404(Order, id=order_id, complete=True)
-    amount = int(order.get_cart_total())  # cần chuyển sang số nguyên
+    try:
+        raw_order_id = int(str(order_id).split('_')[0])
+    except (IndexError, ValueError):
+        return render(request, 'error.html', {'message': 'Mã đơn hàng không hợp lệ.'})
+
+    try:
+        order = Order.objects.get(id=raw_order_id)
+    except Order.DoesNotExist:
+        return render(request, 'error.html', {'message': 'Không tìm thấy đơn hàng.'})
+
+    amount = int(order.get_cart_total())  # hoặc order.amount nếu có sẵn
 
     vnp_params = {
         'vnp_Version': '2.1.0',
         'vnp_Command': 'pay',
         'vnp_TmnCode': settings.VNPAY_TMN_CODE,
-        'vnp_Amount': str(amount * 100),  # nhân 100 theo yêu cầu VNPay
+        'vnp_Amount': str(amount * 100),
         'vnp_CurrCode': 'VND',
-        'vnp_TxnRef': f"{order.id}_{int(timezone.now().timestamp())}",  # mã giao dịch duy nhất
+        'vnp_TxnRef': f"{order.id}_{int(timezone.now().timestamp())}",
         'vnp_OrderInfo': f"Thanh toán đơn hàng {order.id}",
         'vnp_OrderType': 'other',
         'vnp_Locale': 'vn',
@@ -488,8 +498,8 @@ def vnpay_create_payment(request, order_id):
     ).hexdigest()
 
     payment_url = f"{settings.VNPAY_URL}?{query_string}&vnp_SecureHash={secure_hash}"
-
     return redirect(payment_url)
+
 
 
 

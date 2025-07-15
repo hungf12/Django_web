@@ -10,28 +10,25 @@
             <div class="card shadow-sm p-4 h-100">
                 <h4 class="mb-4 text-primary">Thông tin giao hàng & thanh toán</h4>
 
-                <!-- Form gửi địa chỉ và phương thức thanh toán -->
-                <form method="post" action="{% url 'create_order' %}" id="payment-form">
+                <!-- Box nhập địa chỉ nhận hàng -->
+                <form method="post" action="{% url 'create_order' %}">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="address" class="form-label fw-bold">Địa chỉ nhận hàng:</label>
                         <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
                     </div>
 
-                    <!-- Input ẩn chứa phương thức thanh toán -->
-                    <input type="hidden" name="payment_method" id="payment-method" value="">
-
                     <!-- Các nút thanh toán -->
                     <div class="d-grid gap-3">
-                        <button type="button" class="btn btn-success btn-lg" onclick="submitPayment('momo')">
+                        <button type="submit" class="btn btn-success btn-lg">
                             <i class="bi bi-wallet2 me-2"></i> Thanh toán qua MoMo
                         </button>
-                        <button type="button" class="btn btn-success btn-lg" onclick="submitPayment('cod')">
+                        <a class="btn btn-success btn-lg" href="{% url 'cod_payment' %}">
                             <i class="bi bi-cash me-2"></i> Thanh toán tiền mặt (COD)
-                        </button>
-                        <button type="button" class="btn btn-success btn-lg" onclick="submitPayment('vnpay')">
+                        </a>
+                        <a class="btn btn-success btn-lg" href="{% url 'vnpay_create' order.id %}">
                             <i class="bi bi-credit-card me-2"></i> Thanh toán qua VNPay
-                        </button>
+                        </a>
                     </div>
                 </form>
 
@@ -48,7 +45,7 @@
         <div class="col-lg-6">
             <div class="card shadow-sm p-4 h-100">
                 <h4 class="mb-4 text-success">Sản phẩm đã mua</h4>
-
+                
                 {% for item in items %}
                 <div class="cart-row d-flex align-items-center mb-3 border-bottom pb-2">
                     <div class="me-3" style="flex: 1">
@@ -70,13 +67,5 @@
         </div>
     </div>
 </div>
-
-<!-- JavaScript để submit form với phương thức thanh toán tương ứng -->
-<script>
-    function submitPayment(method) {
-        document.getElementById('payment-method').value = method;
-        document.getElementById('payment-form').submit();
-    }
-</script>
 
 {% endblock content_checkout %}
