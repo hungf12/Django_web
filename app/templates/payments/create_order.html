@@ -1,31 +1,119 @@
 <!-- templates/payments/create_order.html -->
-<h2>Tạo đơn hàng</h2>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tạo đơn hàng</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f7fa;
+            padding: 30px;
+        }
 
-{% if message %}
-  <p style="color: red;">{{ message }}</p>
-{% else %}
-  <form method="post">
-    {% csrf_token %}
-    <h3>Sản phẩm trong đơn hàng:</h3>
-    <table border="1">
-      <tr>
-        <th>Sản phẩm</th>
-        <th>Giá</th>
-        <th>Số lượng</th>
-        <th>Tổng</th>
-      </tr>
-      {% for item in items %}
-      <tr>
-        <td>{{ item.product.name }}</td>
-        <td>{{ item.product.price|floatformat:0 }} đ</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.get_total|floatformat:0 }} đ</td>
-      </tr>
-      {% endfor %}
-    </table>
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
 
-    <h4>Tổng tiền: <strong>{{ total|floatformat:0 }} VNĐ</strong></h4>
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
 
-    <button type="submit">Tạo và Thanh toán bằng MoMo</button>
-  </form>
-{% endif %}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f2f5;
+            font-weight: 600;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .message {
+            color: red;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .btn-pay {
+            margin-top: 30px;
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #e91e63;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-pay:hover {
+            background-color: #d81b60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Tạo đơn hàng</h2>
+
+        {% if message %}
+            <p class="message">{{ message }}</p>
+        {% else %}
+            <form method="post">
+                {% csrf_token %}
+
+                <h3>Sản phẩm trong đơn hàng:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Tổng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.product.price|floatformat:0 }} đ</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.get_total|floatformat:0 }} đ</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="total">
+                    <p><strong>Tổng tiền: {{ total|floatformat:0 }} VNĐ</strong></p>
+                </div>
+
+                <button type="submit" class="btn-pay">Tạo và Thanh toán bằng MoMo</button>
+            </form>
+        {% endif %}
+    </div>
+</body>
+</html>
