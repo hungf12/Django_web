@@ -301,6 +301,7 @@ def Payment_method(request):
 #         return redirect("payments:momo_create", order_id=order_id)
 #     return render(request, "payments/create_order.html")
 
+
 @login_required
 def create_order_view(request):
     user = request.user

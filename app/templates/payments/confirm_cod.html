@@ -1,6 +1,31 @@
-<h2>Xác nhận thanh toán tiền mặt</h2>
-<p>Đơn hàng của bạn sẽ được thanh toán khi nhận hàng.</p>
-<form method="post">
-  {% csrf_token %}
-  <button type="submit">Xác nhận đặt hàng</button>
-</form>
+<div style="
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+">
+  <h2 style="color: #333; margin-bottom: 15px;">Xác nhận thanh toán tiền mặt</h2>
+  <p style="color: #555; font-size: 16px; margin-bottom: 25px;">
+    Đơn hàng của bạn sẽ được thanh toán khi nhận hàng.
+  </p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" style="
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    " onmouseover="this.style.backgroundColor='#218838'"
+       onmouseout="this.style.backgroundColor='#28a745'">
+      Xác nhận đặt hàng
+    </button>
+  </form>
+</div>
