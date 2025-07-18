@@ -5,8 +5,7 @@ register = template.Library()
 @register.filter
 def currency(value):
     try:
-        value = int(float(value))  # Chuyển thành số nguyên
-        return "{:,.0f}".format(value).replace(",", ".")  # Dùng dấu "." cho VND
-    except ValueError:
+        value = float(value)
+        return f"{value:,.0f}"
+    except:
         return value
-

@@ -76,18 +76,41 @@ def cart(request):
         cartItems = order['get_cart_items']
     context = {'items': items,'order':order, 'cartItems': cartItems}
     return render(request, 'app/cart.html', context)
+
+from django.contrib import messages  # để dùng thông báo
+from django.shortcuts import redirect
+
 def checkout(request):
-    if request.user.is_authenticated:
-        customer = request.user
-        order, created = Order.objects.get_or_create(customer=customer,complete = False)
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
+    if not request.user.is_authenticated:
+        return redirect('login')  # hoặc tùy theo flow của bạn
+
+    customer = request.user
+    order, created = Order.objects.get_or_create(customer=customer, complete=False)
+
+    if request.method == 'POST':
+        selected_item_ids = request.POST.getlist('selected_items')
+        
+        if not selected_item_ids:
+            messages.warning(request, "Vui lòng chọn ít nhất một sản phẩm để thanh toán.")
+            return redirect('cart')  # quay lại giỏ hàng nếu không chọn gì
+
+        # Lấy các OrderItem được chọn
+        items = order.orderitem_set.filter(id__in=selected_item_ids)
     else:
-        items = []
-        order = {'get_cart_items':0,'get_cart_total':0}
-        cartItems = order['get_cart_items']
-    context = {'items': items,'order':order, 'cartItems': cartItems}
+        # Nếu vào trực tiếp (GET), mặc định hiển thị toàn bộ giỏ hàng
+        items = order.orderitem_set.all()
+
+    cart_total = sum([item.get_total for item in items])
+    cart_items = sum([item.quantity for item in items])
+
+    context = {
+        'items': items,
+        'order': order,
+        'cartItems': cart_items,
+        'cartTotal': cart_total
+    }
     return render(request, 'app/checkout.html', context)
+
 
 def updateItem(request):
     data = json.loads(request.body)
@@ -305,30 +328,55 @@ def Payment_method(request):
 def create_order_view(request):
     user = request.user
     try:
-        # Lấy đơn hàng chưa thanh toán (giỏ hàng hiện tại)
         order = Order.objects.get(customer=user, complete=False)
     except Order.DoesNotExist:
-        order = None
-
-    if not order or order.orderitem_set.count() == 0:
         return render(request, 'payments/create_order.html', {'message': 'Giỏ hàng trống!'})
 
-    # Tính tổng tiền
-    items = order.orderitem_set.all()
-    total = order.get_cart_total
-
     if request.method == "POST":
-        # Gắn cờ hoàn tất đơn hàng
+        selected_ids = request.POST.getlist('selected_items')
+        items = order.orderitem_set.filter(id__in=selected_ids)
+
+        if not items.exists():
+            return render(request, 'payments/create_order.html', {
+                'message': 'Bạn chưa chọn sản phẩm nào!',
+                'items': order.orderitem_set.all(),
+                'order': order,
+                'total': 0
+            })
+
+        total = sum(item.get_total for item in items)
+
+        payment_method = request.POST.get('payment_method')
+
+        # Đánh dấu đơn hàng là hoàn tất
         order.complete = True
         order.save()
 
         # Tạo thông tin thanh toán
         payment = Payment.objects.create(
-            order_id=str(order.id),
+            order=order,
             amount=total
         )
 
-        return redirect('payments:momo_create', order_id=order.id)
+        # Lưu lại những item đã chọn bằng cách tạm thời giữ lại, xóa các item không chọn
+        order.orderitem_set.exclude(id__in=selected_ids).delete()
+
+        if payment_method == 'momo':
+            return redirect('payments:momo_create', order_id=order.id)
+        elif payment_method == 'vnpay':
+            return redirect('payments:vnpay_create', order_id=order.id)
+        else:
+            return render(request, 'payments/create_order.html', {
+                'message': 'Phương thức thanh toán không hợp lệ!',
+                'items': items,
+                'total': total,
+                'order': order
+            })
+
+    else:
+        # GET: hiển thị tất cả sản phẩm trong giỏ để người dùng chọn
+        items = order.orderitem_set.all()
+        total = sum(item.get_total for item in items)
 
     return render(request, 'payments/create_order.html', {
         'order': order,
@@ -495,25 +543,43 @@ def cod_payment_view(request):
     return render(request, "payments/confirm_cod.html", {"order": order, "total": total})
 
 
-import hashlib
-import hmac
-import urllib.parse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from .models import Order, Payment  # cập nhật đúng theo app bạn
+import hmac, hashlib
+from app.models import Order, Payment
 
+@login_required
 def vnpay_create_payment(request, order_id):
-    order = get_object_or_404(Order, id=order_id, complete=True)
-    amount = int(order.get_cart_total())  # cần chuyển sang số nguyên
+    # order = get_object_or_404(Order, id=order_id, customer=request.user, complete=False)
+    order = get_object_or_404(Order, id=order_id, customer=request.user)
+    if order.orderitem_set.count() == 0:
+        return render(request, "payments/create_order.html", {"message": "Giỏ hàng trống!"})
+
+    total = int(order.get_cart_total)  # VNPay yêu cầu số nguyên
+
+    # Đánh dấu hoàn tất đơn hàng
+    order.complete = True
+    order.save()
+
+    # Tạo bản ghi thanh toán
+    payment = Payment.objects.create(
+        order=order,
+        amount=total,
+        method="vnpay",
+        is_paid=False
+    )
+
+    txn_ref = f"{order.id}_{int(timezone.now().timestamp())}"
 
     vnp_params = {
         'vnp_Version': '2.1.0',
         'vnp_Command': 'pay',
         'vnp_TmnCode': settings.VNPAY_TMN_CODE,
-        'vnp_Amount': str(amount * 100),  # nhân 100 theo yêu cầu VNPay
+        'vnp_Amount': str(total * 100),  # nhân 100
         'vnp_CurrCode': 'VND',
-        'vnp_TxnRef': f"{order.id}_{int(timezone.now().timestamp())}",  # mã giao dịch duy nhất
+        'vnp_TxnRef': txn_ref,
         'vnp_OrderInfo': f"Thanh toán đơn hàng {order.id}",
         'vnp_OrderType': 'other',
         'vnp_Locale': 'vn',
@@ -522,6 +588,7 @@ def vnpay_create_payment(request, order_id):
         'vnp_CreateDate': timezone.now().strftime('%Y%m%d%H%M%S'),
     }
 
+    # Sắp xếp và tạo chữ ký
     sorted_params = sorted(vnp_params.items())
     query_string = '&'.join([f"{k}={v}" for k, v in sorted_params])
     hash_data = '&'.join([f"{k}={v}" for k, v in sorted_params])
@@ -531,10 +598,9 @@ def vnpay_create_payment(request, order_id):
         hashlib.sha512
     ).hexdigest()
 
+    # URL thanh toán
     payment_url = f"{settings.VNPAY_URL}?{query_string}&vnp_SecureHash={secure_hash}"
-
     return redirect(payment_url)
-
 
 
 from django.views.decorators.csrf import csrf_exempt
@@ -545,11 +611,16 @@ def vnpay_return_view(request):
     vnp_TxnRef = params.get('vnp_TxnRef')
     vnp_ResponseCode = params.get('vnp_ResponseCode')
 
-    if vnp_ResponseCode == '00':  # thanh toán thành công
-        order_id = vnp_TxnRef.split("_")[0]
-        payment = Payment.objects.get(order_id=order_id)
+    order_id = vnp_TxnRef.split("_")[0]
+
+    try:
+        payment = Payment.objects.get(order__id=order_id, method='vnpay')
+    except Payment.DoesNotExist:
+        return render(request, 'payments/vnpay_fail.html', {"message": "Không tìm thấy giao dịch thanh toán."})
+
+    if vnp_ResponseCode == '00':  # Thanh toán thành công
         payment.is_paid = True
         payment.save()
         return render(request, 'payments/vnpay_success.html', {"order_id": order_id})
-    return render(request, 'payments/vnpay_fail.html', {"message": "Thanh toán thất bại."})
 
+    return render(request, 'payments/vnpay_fail.html', {"message": "Thanh toán thất bại."})

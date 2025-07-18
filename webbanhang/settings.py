@@ -155,7 +155,9 @@ MOMO_NOTIFY_URL = "https://cc7e712d0ea0.ngrok-free.app/payment/notify/"
 
 
 # VNPay Settings
-VNPAY_TMN_CODE = 'YOUR_VNP_TMNCODE'
-VNPAY_HASH_SECRET = 'YOUR_HASH_SECRET'
-VNPAY_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
-VNPAY_RETURN_URL = 'https://yourdomain.com/payment/vnpay-return/'  # ngrok nếu đang test local
+VNPAY_TMN_CODE = "YOUR_VNP_TMNCODE"              # Mã Terminal Code do VNPay cấp
+VNPAY_HASH_SECRET = "YOUR_HASH_SECRET"           # Chuỗi bí mật dùng để ký SHA512
+VNPAY_URL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+
+# Phải trỏ đúng đến view xử lý trả kết quả từ VNPay
+VNPAY_RETURN_URL = "https://ce84b7669046.ngrok-free.app/payments/vnpay/return/" # ngrok nếu đang test local

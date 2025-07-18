@@ -4,48 +4,60 @@
 {% block cart_content %}
 <div class="row" style="width:100%">
 	<div class="col-lg-12">
-		<div class="box-element product">
-			<!-- <a class="btn btn-outline-dark" style="float: left; margin: 2px;" href="{% url 'home' %}">&#x2190; Quay về trang chủ</a> -->
-			 <div class="payment-btn">
-				<a class="btn btn-success" href="{% url 'home' %}"><i class="bi bi-house"></i> Trang chủ </a>
-			 </div>
-			<br>
-			<br>
-			<table class="table">
-				<tr>
-					<th><h5>Số lượng: <strong>{{order.get_cart_items}}</strong></h5></th>
-					<th><h5>Thành tiền: <strong>{{order.get_cart_total|currency}}VND</strong></h5></th>
-					<th>
-						<a class="btn btn-success" href="{% url 'checkout' %}"> <i class="bi bi-credit-card"></i> Thanh toán</a>
-					</th>
-				</tr>
-			</table>
-		</div>
-		<br>
-		<div class="box-element">
-			<div class="cart-row">
-				<div style="flex:2"></div>
-				<div style="flex:2"><strong>Sản phẩm</strong></div>
-				<div style="flex:1"><strong>Đơn giá</strong></div>
-				<div style="flex:1"><strong>Số lượng</strong></div>
-				<div style="flex:1"><strong>Thành tiền</strong></div>
+		<form method="post" action="{% url 'checkout' %}">
+			{% csrf_token %}
+			<div class="box-element product">
+				<div class="payment-btn">
+					<a class="btn btn-success" href="{% url 'home' %}"><i class="bi bi-house"></i> Trang chủ</a>
+				</div>
+				<br><br>
+				<table class="table">
+					<tr>
+						<th><h5>Số lượng: <strong>{{order.get_cart_items}}</strong></h5></th>
+						<th><h5>Thành tiền: <strong>{{order.get_cart_total|currency}} VND</strong></h5></th>
+						<th>
+							<!-- Nút thanh toán đã có sẵn -->
+							<button type="submit" class="btn btn-success">
+								<i class="bi bi-credit-card"></i> Thanh toán
+							</button>
+						</th>
+					</tr>
+				</table>
 			</div>
-			{% for item in items %}
-			<div class="cart-row">
-				<div style="flex:2"><img class="row-image" src="{{item.product.ImageURL}}"></div>
-				<div style="flex:2"><p>{{item.product.name}}</p></div>
-				<div style="flex:1"><p>{{item.product.price|currency}}</p></div>
-				<div style="flex:1">
-					<p class="quantity">{{item.quantity}}</p>
-					<div class="quantity">
-						<img data-product= {{item.product.id}} data-action= 'add' class="chg-quantity update-cart" src="{% static  'app/images/arrow-up.png' %}">
-						<img data-product= {{item.product.id}} data-action= 'remove' class="chg-quantity update-cart" src="{% static  'app/images/arrow-down.png' %}">
-					</div> 
-				</div> 
-				<div style="flex:1"><p>{{item.get_total|currency}}</p></div>
+
+			<br>
+			<div class="box-element">
+				<div class="cart-row">
+					<div style="flex:0.5"><strong>Chọn</strong></div>
+					<div style="flex:2"></div>
+					<div style="flex:2"><strong>Sản phẩm</strong></div>
+					<div style="flex:1"><strong>Đơn giá</strong></div>
+					<div style="flex:1"><strong>Số lượng</strong></div>
+					<div style="flex:1"><strong>Thành tiền</strong></div>
+				</div>
+
+				{% for item in items %}
+				<div class="cart-row">
+					<div style="flex:0.5">
+						<input type="checkbox" name="selected_items" value="{{ item.id }}">
+					</div>
+					<div style="flex:2">
+						<img class="row-image" src="{{ item.product.ImageURL }}">
+					</div>
+					<div style="flex:2"><p>{{ item.product.name }}</p></div>
+					<div style="flex:1"><p>{{ item.product.price|currency }}</p></div>
+					<div style="flex:1">
+						<p class="quantity">{{ item.quantity }}</p>
+						<div class="quantity">
+							<img data-product="{{ item.product.id }}" data-action='add' class="chg-quantity update-cart" src="{% static 'app/images/arrow-up.png' %}">
+							<img data-product="{{ item.product.id }}" data-action='remove' class="chg-quantity update-cart" src="{% static 'app/images/arrow-down.png' %}">
+						</div>
+					</div>
+					<div style="flex:1"><p>{{ item.get_total|currency }}</p></div>
+				</div>
+				{% endfor %}
 			</div>
-			{%endfor%}
-		</div>
+		</form>
 	</div>
 </div>
 {% endblock cart_content %}

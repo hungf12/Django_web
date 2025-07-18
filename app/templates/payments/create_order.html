@@ -1,4 +1,3 @@
-<!-- templates/payments/create_order.html -->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -73,11 +72,28 @@
         .btn-pay:hover {
             background-color: #d81b60;
         }
+
+        .payment-options {
+            margin-top: 20px;
+        }
+
+        .payment-options label {
+            font-weight: 500;
+            margin-right: 20px;
+        }
+
+        .payment-options input {
+            margin-right: 8px;
+        }
+
+        .checkbox-center {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Tạo đơn hàng</h2>
+        <h2>Thông tin thanh toán</h2>
 
         {% if message %}
             <p class="message">{{ message }}</p>
@@ -85,10 +101,21 @@
             <form method="post">
                 {% csrf_token %}
 
-                <h3>Sản phẩm trong đơn hàng:</h3>
+                <div class="payment-options">
+                    <h3>Chọn phương thức thanh toán:</h3>
+                    <label>
+                        <input type="radio" name="payment_method" value="momo" checked> MoMo
+                    </label>
+                    <label>
+                        <input type="radio" name="payment_method" value="vnpay"> VNPay
+                    </label>
+                </div>
+
+                <h3>Chọn sản phẩm để thanh toán:</h3>
                 <table>
                     <thead>
                         <tr>
+                            <th class="checkbox-center">Chọn</th>
                             <th>Sản phẩm</th>
                             <th>Giá</th>
                             <th>Số lượng</th>
@@ -98,6 +125,9 @@
                     <tbody>
                         {% for item in items %}
                         <tr>
+                            <td class="checkbox-center">
+                                <input type="checkbox" name="selected_items" value="{{ item.id }}" checked>
+                            </td>
                             <td>{{ item.product.name }}</td>
                             <td>{{ item.product.price|floatformat:0 }} đ</td>
                             <td>{{ item.quantity }}</td>
@@ -109,9 +139,10 @@
 
                 <div class="total">
                     <p><strong>Tổng tiền: {{ total|floatformat:0 }} VNĐ</strong></p>
+                    <small>(Tổng tiền này có thể thay đổi theo sản phẩm được chọn)</small>
                 </div>
 
-                <button type="submit" class="btn-pay">Tạo và Thanh toán bằng MoMo</button>
+                <button type="submit" class="btn-pay">Tạo và Thanh toán</button>
             </form>
         {% endif %}
     </div>
