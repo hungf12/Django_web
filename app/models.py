@@ -29,23 +29,34 @@ class Product(models.Model):
         except:
             url = ''
         return url
-
 class Order(models.Model):
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     date_order = models.DateTimeField(null=False, blank=False, default=timezone.now)
-    complete = models.BooleanField(default=False, null= True, blank=False)
-    transaction_id = models.CharField(max_length=256,null=True)
+    complete = models.BooleanField(default=False, null=True, blank=False)
+    transaction_id = models.CharField(max_length=256, null=True)
+    
+    # Thêm các trường phục vụ MoMo
+    momo_order_id = models.CharField(max_length=128, blank=True, null=True)
+    momo_request_id = models.CharField(max_length=128, blank=True, null=True)
+    momo_qr_code_url = models.URLField(blank=True, null=True)
+    momo_pay_url = models.URLField(blank=True, null=True)
+    momo_result_code = models.IntegerField(blank=True, null=True)
+
     def __str__(self):
         return str(self.id)
+
     @property
     def get_cart_items(self):
         orderitems = self.orderitem_set.all()
         total = sum([item.quantity for item in orderitems])
         return total
+
+    @property
     def get_cart_total(self):
         orderitems = self.orderitem_set.all()
         total = sum([item.get_total for item in orderitems])
         return total
+
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
@@ -77,14 +88,16 @@ class Store(models.Model):
     
 class Payment(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True)
-    momo_order_id = models.CharField(max_length=150, unique=True, null=True, blank=True) # Gửi qua MoMo
-    amount = models.DecimalField(max_digits=10, decimal_places=0)  # MoMo yêu cầu số nguyên
+    momo_order_id = models.CharField(max_length=150, unique=True, null=True, blank=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=0)
     is_paid = models.BooleanField(default=False)
     method = models.CharField(
-        max_length=50, 
-        choices=[('momo', 'MoMo'), ('cod', 'tiền mặt')], 
+        max_length=50,
+        choices=[('momo', 'MoMo'), ('cod', 'tiền mặt')],
         default='cod'
     )
+    momo_trans_id = models.CharField(max_length=255, null=True, blank=True)  # <-- thêm dòng này
     created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return f"Order {self.order.id} - {'Đã thanh toán' if self.is_paid else 'Chưa thanh toán'}"

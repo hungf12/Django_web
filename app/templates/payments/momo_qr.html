@@ -1,2 +1,56 @@
-<h2>Quét mã QR MoMo để thanh toán</h2>
-<iframe src="{{ payUrl }}" width="450" height="400" frameborder="0"></iframe>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh toán MoMo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 40px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            color: #333;
+        }
+        .qr-container {
+            margin-top: 20px;
+        }
+        .qr-container img {
+            width: 300px;
+            height: 300px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background: white;
+        }
+        .fallback-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .fallback-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>{{ message }}</h2>
+
+    <div class="qr-container">
+        {% if qrCodeBase64 %}
+            <img src="data:image/png;base64,{{ qrCodeBase64 }}" alt="QR Code">
+        {% elif qrCodeUrl %}
+            <img src="{{ qrCodeUrl }}" alt="QR Code">
+        {% else %}
+            <p style="color:red;">Không thể tạo mã QR thanh toán.</p>
+        {% endif %}
+    </div>
+
+    {% if payUrl %}
+        <a class="fallback-link" href="{{ payUrl }}" target="_blank">Mở MoMo nếu không thấy mã QR</a>
+    {% endif %}
+
+</body>
+</html>

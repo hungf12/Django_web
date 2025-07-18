@@ -157,5 +157,5 @@ MOMO_NOTIFY_URL = "https://cc7e712d0ea0.ngrok-free.app/payment/notify/"
 # VNPay Settings
 VNPAY_TMN_CODE = 'YOUR_VNP_TMNCODE'
 VNPAY_HASH_SECRET = 'YOUR_HASH_SECRET'
-VNPAY_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'  # ✅ Đúng URL cho test
-VNPAY_RETURN_URL = 'https://cc7e712d0ea0.ngrok-free.app/payment/vnpay-return/'  # vẫn có thể dùng ngrok ở đây
+VNPAY_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
+VNPAY_RETURN_URL = 'https://yourdomain.com/payment/vnpay-return/'  # ngrok nếu đang test local

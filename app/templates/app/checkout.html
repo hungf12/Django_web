@@ -5,34 +5,25 @@
 
 <div class="container my-5">
     <div class="row">
-        <!-- Cột chọn phương thức thanh toán và địa chỉ nhận hàng -->
+        <!-- Cột chọn phương thức thanh toán -->
         <div class="col-lg-6 mb-4">
             <div class="card shadow-sm p-4 h-100">
-                <h4 class="mb-4 text-primary">Thông tin giao hàng & thanh toán</h4>
-
-                <!-- Box nhập địa chỉ nhận hàng -->
-                <form method="post" action="{% url 'create_order' %}">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="address" class="form-label fw-bold">Địa chỉ nhận hàng:</label>
-                        <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
-                    </div>
-
-                    <!-- Các nút thanh toán -->
-                    <div class="d-grid gap-3">
-                        <button type="submit" class="btn btn-success btn-lg">
-                            <i class="bi bi-wallet2 me-2"></i> Thanh toán qua MoMo
-                        </button>
-                        <a class="btn btn-success btn-lg" href="{% url 'cod_payment' %}">
-                            <i class="bi bi-cash me-2"></i> Thanh toán tiền mặt (COD)
-                        </a>
-                        <a class="btn btn-success btn-lg" href="{% url 'vnpay_create' order.id %}">
-                            <i class="bi bi-credit-card me-2"></i> Thanh toán qua VNPay
-                        </a>
-                    </div>
-                </form>
-
-                <!-- Quay lại giỏ hàng -->
+                <h4 class="mb-4 text-primary">Chọn phương thức thanh toán</h4>
+                
+                <div class="d-grid gap-3">
+                    <a class="btn btn-success btn-lg" href="{% url 'create_order' %}">
+                        <i class="bi bi-wallet2 me-2"></i> Thanh toán qua MoMo
+                    </a>
+                    <!-- Có thể thêm các phương thức khác nếu muốn -->
+                    <!-- <a class="btn btn-outline-primary btn-lg" href="#">Chuyển khoản ngân hàng</a>
+                    <a class="btn btn-outline-secondary btn-lg" href="#">Thanh toán khi nhận hàng (COD)</a> -->
+                    <a class="btn btn-success btn-lg" href="{% url 'cod_payment' %}">
+                        <i class="bi bi-wallet2 me-2"></i> Thanh toán qua tiền mặt
+                    </a>
+                    <a class="btn btn-success btn-lg" href="{% url 'vnpay_create' order.id %}">
+                        <i class="bi bi-wallet2 me-2"></i> Thanh toán qua VNPay
+                    </a>
+                </div>
                 <div class="mt-4">
                     <a class="btn btn-outline-dark" href="{% url 'cart' %}">
                         <i class="bi bi-cart me-2"></i> Quay lại giỏ hàng

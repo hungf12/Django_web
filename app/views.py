@@ -301,7 +301,6 @@ def Payment_method(request):
 #         return redirect("payments:momo_create", order_id=order_id)
 #     return render(request, "payments/create_order.html")
 
-
 @login_required
 def create_order_view(request):
     user = request.user
@@ -316,7 +315,7 @@ def create_order_view(request):
 
     # Tính tổng tiền
     items = order.orderitem_set.all()
-    total = order.get_cart_total()
+    total = order.get_cart_total
 
     if request.method == "POST":
         # Gắn cờ hoàn tất đơn hàng
@@ -338,18 +337,23 @@ def create_order_view(request):
     })
 
 
+from django.shortcuts import render, get_object_or_404
+import uuid, time, hmac, hashlib, requests
+from django.conf import settings
+from .models import Payment
+import qrcode
+from io import BytesIO
+import base64
+
 def momo_create_payment(request, order_id):
     payment = get_object_or_404(Payment, order_id=order_id)
     request_id = str(uuid.uuid4())
-
-    # Tạo orderId duy nhất bằng cách thêm timestamp
     unique_order_id = f"{payment.order_id}_{int(time.time())}"
 
-    # Lưu lại momo_order_id nếu cần
+    # Lưu lại momo_order_id để đối chiếu về sau
     payment.momo_order_id = unique_order_id
     payment.save()
 
-    # Tạo raw signature
     raw_signature = (
         f"accessKey={settings.MOMO_ACCESS_KEY}"
         f"&amount={int(payment.amount)}"
@@ -363,14 +367,12 @@ def momo_create_payment(request, order_id):
         f"&requestType=captureWallet"
     )
 
-    # Ký SHA256
     signature = hmac.new(
-        bytes(settings.MOMO_SECRET_KEY, 'utf-8'),
-        bytes(raw_signature, 'utf-8'),
+        settings.MOMO_SECRET_KEY.encode(),
+        raw_signature.encode(),
         hashlib.sha256
     ).hexdigest()
 
-    # Dữ liệu gửi tới MoMo
     data = {
         "partnerCode": settings.MOMO_PARTNER_CODE,
         "accessKey": settings.MOMO_ACCESS_KEY,
@@ -386,36 +388,78 @@ def momo_create_payment(request, order_id):
         "lang": "vi"
     }
 
-    # Gửi request
     response = requests.post(settings.MOMO_ENDPOINT, json=data)
     res_data = response.json()
     print("MoMo response:", response.status_code, res_data)
 
-    # Xử lý lỗi trả về từ MoMo
     if res_data.get("resultCode") != 0:
         return render(request, "payments/momo_qr.html", {
             "payUrl": "#",
+            "qrCodeBase64": None,
             "message": f"Lỗi từ MoMo: {res_data.get('message')}"
         })
 
-    # Trả về trang chứa QR thanh toán
+    # Lưu lại URL để sau này kiểm tra
+    payment.momo_pay_url = res_data.get("payUrl")
+    payment.save()
+
+    # Tạo ảnh QR từ payUrl
+    img = qrcode.make(res_data["payUrl"])
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    qr_code_base64 = base64.b64encode(buffer.getvalue()).decode()
+
     return render(request, "payments/momo_qr.html", {
         "payUrl": res_data["payUrl"],
-        "message": "Vui lòng quét mã QR để thanh toán."
+        "qrCodeBase64": qr_code_base64,
+        "message": "Vui lòng quét mã QR bằng ứng dụng MoMo để thanh toán."
     })
+
+
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+import json
+from .models import Payment
 
 @csrf_exempt
 def momo_notify_view(request):
-    data = json.loads(request.body)
-    order_id = data.get("orderId")
+    if request.method != "POST":
+        return HttpResponse("Phương thức không hợp lệ", status=405)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return HttpResponse("Dữ liệu không hợp lệ", status=400)
+
+    momo_order_id = data.get("orderId")
     result_code = data.get("resultCode")
+    trans_id = data.get("transId")  # MoMo trả về transaction_id
+
+    if not momo_order_id:
+        return HttpResponse("Thiếu orderId", status=400)
+
+    # Tìm payment theo momo_order_id
+    payment = Payment.objects.filter(momo_order_id=momo_order_id).first()
+    if not payment:
+        return HttpResponse("Không tìm thấy đơn thanh toán", status=404)
 
     if result_code == 0:
-        payment = Payment.objects.get(order_id=order_id)
         payment.is_paid = True
+        payment.momo_trans_id = trans_id
         payment.save()
+
+        # Có thể update thêm order.complete = True nếu cần:
+        if payment.order:
+            payment.order.complete = True
+            payment.order.transaction_id = trans_id
+            payment.order.save()
+
         return HttpResponse("Thanh toán thành công", status=200)
-    return HttpResponse("Lỗi thanh toán", status=400)
+
+    # Nếu thanh toán thất bại hoặc bị hủy
+    return HttpResponse("Thanh toán thất bại", status=400)
+
 
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
@@ -459,27 +503,17 @@ from django.conf import settings
 from django.utils import timezone
 from .models import Order, Payment  # cập nhật đúng theo app bạn
 
-# views.py
 def vnpay_create_payment(request, order_id):
-    try:
-        raw_order_id = int(str(order_id).split('_')[0])
-    except (IndexError, ValueError):
-        return render(request, 'error.html', {'message': 'Mã đơn hàng không hợp lệ.'})
-
-    try:
-        order = Order.objects.get(id=raw_order_id)
-    except Order.DoesNotExist:
-        return render(request, 'error.html', {'message': 'Không tìm thấy đơn hàng.'})
-
-    amount = int(order.get_cart_total())  # hoặc order.amount nếu có sẵn
+    order = get_object_or_404(Order, id=order_id, complete=True)
+    amount = int(order.get_cart_total())  # cần chuyển sang số nguyên
 
     vnp_params = {
         'vnp_Version': '2.1.0',
         'vnp_Command': 'pay',
         'vnp_TmnCode': settings.VNPAY_TMN_CODE,
-        'vnp_Amount': str(amount * 100),
+        'vnp_Amount': str(amount * 100),  # nhân 100 theo yêu cầu VNPay
         'vnp_CurrCode': 'VND',
-        'vnp_TxnRef': f"{order.id}_{int(timezone.now().timestamp())}",
+        'vnp_TxnRef': f"{order.id}_{int(timezone.now().timestamp())}",  # mã giao dịch duy nhất
         'vnp_OrderInfo': f"Thanh toán đơn hàng {order.id}",
         'vnp_OrderType': 'other',
         'vnp_Locale': 'vn',
@@ -498,8 +532,8 @@ def vnpay_create_payment(request, order_id):
     ).hexdigest()
 
     payment_url = f"{settings.VNPAY_URL}?{query_string}&vnp_SecureHash={secure_hash}"
-    return redirect(payment_url)
 
+    return redirect(payment_url)
 
 
 
