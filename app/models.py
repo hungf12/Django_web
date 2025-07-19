@@ -4,10 +4,46 @@ from django.contrib.auth.forms import UserCreationForm
 from django.utils import timezone
 import json
 # change forms register django
+
+# models.py
+from django.db import models
+from django.contrib.auth.models import User
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    cccd = models.CharField(max_length=12, unique=True)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.cccd}'
+
+# forms.py
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from .models import UserProfile
+
 class CreateUserForm(UserCreationForm):
+    cccd = forms.CharField(max_length=12, label='CCCD')
+
     class Meta:
         model = User
-        fields = ['username','email','first_name','last_name','password1','password2']
+        fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'cccd']
+
+    def clean_cccd(self):
+        cccd = self.cleaned_data['cccd']
+        if not cccd.isdigit() or len(cccd) != 12:
+            raise forms.ValidationError("CCCD phải là số và đủ 12 chữ số.")
+        if UserProfile.objects.filter(cccd=cccd).exists():
+            raise forms.ValidationError("CCCD này đã được sử dụng.")
+        return cccd
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if commit:
+            user.save()
+            UserProfile.objects.create(user=user, cccd=self.cleaned_data['cccd'])
+        return user
+
 # Create your models here.
 
 class Product(models.Model):

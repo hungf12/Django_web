@@ -24,15 +24,25 @@ from .models import Order, OrderItem, Product, Payment
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import CreateUserForm
+
 def register(request):
-    form = CreateUserForm()
     if request.method == "POST":
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Đăng ký thành công! Vui lòng đăng nhập.")
             return redirect('login')
-    context ={'form':form}
-    return render(request, 'app/register.html',context)
+        else:
+            messages.error(request, "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.")
+    else:
+        form = CreateUserForm()
+    
+    context = {'form': form}
+    return render(request, 'app/register.html', context)
+
 def loginpage(request):
     if request.user.is_authenticated:
         return redirect('home')
