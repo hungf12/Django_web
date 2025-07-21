@@ -11,7 +11,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
             background: white;
             padding: 30px;
@@ -33,12 +33,17 @@
         th, td {
             padding: 12px;
             border: 1px solid #e0e0e0;
-            text-align: left;
+            text-align: center;
         }
 
         th {
             background-color: #f0f2f5;
             font-weight: 600;
+        }
+
+        td img {
+            max-height: 60px;
+            border-radius: 8px;
         }
 
         .total {
@@ -97,7 +102,10 @@
 
         {% if message %}
             <p class="message">{{ message }}</p>
-        {% else %}
+        {% endif %}
+
+        {% if not order.complete %}
+            <!-- Nếu đơn chưa hoàn tất, cho phép chọn sản phẩm -->
             <form method="post">
                 {% csrf_token %}
 
@@ -138,12 +146,38 @@
                 </table>
 
                 <div class="total">
-                    <p><strong>Tổng tiền: {{ total|floatformat:0 }} VNĐ</strong></p>
-                    <small>(Tổng tiền này có thể thay đổi theo sản phẩm được chọn)</small>
+                    <p><strong>Tổng tiền (tạm tính): {{ total|floatformat:0 }} VNĐ</strong></p>
                 </div>
 
                 <button type="submit" class="btn-pay">Tạo và Thanh toán</button>
             </form>
+
+        {% else %}
+            <!-- Sau khi đơn đã complete, chỉ hiển thị sản phẩm đã chọn -->
+            <h3>Sản phẩm đã đặt:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Tổng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.product.price|floatformat:0 }} đ</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.get_total|floatformat:0 }} đ</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="total">
+                <p><strong>Tổng tiền: {{ total|floatformat:0 }} VNĐ</strong></p>
+            </div>
         {% endif %}
     </div>
 </body>

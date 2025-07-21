@@ -14,9 +14,6 @@
                     <a class="btn btn-success btn-lg" href="{% url 'create_order' %}">
                         <i class="bi bi-wallet2 me-2"></i> Thanh toán qua MoMo
                     </a>
-                    <!-- Có thể thêm các phương thức khác nếu muốn -->
-                    <!-- <a class="btn btn-outline-primary btn-lg" href="#">Chuyển khoản ngân hàng</a>
-                    <a class="btn btn-outline-secondary btn-lg" href="#">Thanh toán khi nhận hàng (COD)</a> -->
                     <a class="btn btn-success btn-lg" href="{% url 'cod_payment' %}">
                         <i class="bi bi-wallet2 me-2"></i> Thanh toán qua tiền mặt
                     </a>
@@ -51,8 +48,8 @@
                 {% endfor %}
 
                 <div class="mt-4">
-                    <h5>Số lượng sản phẩm: <span class="text-primary">{{ order.get_cart_items }}</span></h5>
-                    <h5>Thành tiền: <span class="text-danger">{{ order.get_cart_total|currency }} VND</span></h5>
+                    <h5>Số lượng sản phẩm: <span class="text-primary">{{ cartItems }}</span></h5>
+                    <h5>Thành tiền: <span class="text-danger">{{ cartTotal|currency }} VND</span></h5>
                 </div>
             </div>
         </div>

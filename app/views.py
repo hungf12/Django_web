@@ -90,27 +90,29 @@ def cart(request):
 from django.contrib import messages  # để dùng thông báo
 from django.shortcuts import redirect
 
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from .models import Order
+
 def checkout(request):
     if not request.user.is_authenticated:
-        return redirect('login')  # hoặc tùy theo flow của bạn
+        return redirect('login')
 
     customer = request.user
     order, created = Order.objects.get_or_create(customer=customer, complete=False)
 
     if request.method == 'POST':
         selected_item_ids = request.POST.getlist('selected_items')
-        
+
         if not selected_item_ids:
             messages.warning(request, "Vui lòng chọn ít nhất một sản phẩm để thanh toán.")
-            return redirect('cart')  # quay lại giỏ hàng nếu không chọn gì
+            return redirect('cart')
 
-        # Lấy các OrderItem được chọn
         items = order.orderitem_set.filter(id__in=selected_item_ids)
     else:
-        # Nếu vào trực tiếp (GET), mặc định hiển thị toàn bộ giỏ hàng
         items = order.orderitem_set.all()
 
-    cart_total = sum([item.get_total for item in items])
+    cart_total = sum([item.get_total for item in items])  # ✅ đã sửa
     cart_items = sum([item.quantity for item in items])
 
     context = {
@@ -120,6 +122,8 @@ def checkout(request):
         'cartTotal': cart_total
     }
     return render(request, 'app/checkout.html', context)
+
+
 
 
 def updateItem(request):

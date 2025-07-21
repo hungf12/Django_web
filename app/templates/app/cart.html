@@ -1,63 +1,105 @@
 {% extends 'app/base.html' %}
 {% load static %}
 {% load filters %}
+
 {% block cart_content %}
 <div class="row" style="width:100%">
-	<div class="col-lg-12">
-		<form method="post" action="{% url 'checkout' %}">
-			{% csrf_token %}
-			<div class="box-element product">
-				<div class="payment-btn">
-					<a class="btn btn-success" href="{% url 'home' %}"><i class="bi bi-house"></i> Trang chủ</a>
-				</div>
-				<br><br>
-				<table class="table">
-					<tr>
-						<th><h5>Số lượng: <strong>{{order.get_cart_items}}</strong></h5></th>
-						<th><h5>Thành tiền: <strong>{{order.get_cart_total|currency}} VND</strong></h5></th>
-						<th>
-							<!-- Nút thanh toán đã có sẵn -->
-							<button type="submit" class="btn btn-success">
-								<i class="bi bi-credit-card"></i> Thanh toán
-							</button>
-						</th>
-					</tr>
-				</table>
-			</div>
+    <div class="col-lg-12">
+        <form method="post" action="{% url 'checkout' %}">
+            {% csrf_token %}
+            <div class="box-element product">
+                <div class="payment-btn">
+                    <a class="btn btn-success" href="{% url 'home' %}">
+                        <i class="bi bi-house"></i> Trang chủ
+                    </a>
+                </div>
+                <br><br>
+                <table class="table">
+                    <tr>
+                        <th><h5>Số lượng: <strong id="total-quantity">0</strong></h5></th>
+                        <th><h5>Thành tiền: <strong id="total-price">0 VND</strong></h5></th>
+                        <th>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-credit-card"></i> Thanh toán
+                            </button>
+                        </th>
+                    </tr>
+                </table>
+            </div>
 
-			<br>
-			<div class="box-element">
-				<div class="cart-row">
-					<div style="flex:0.5"><strong>Chọn</strong></div>
-					<div style="flex:2"></div>
-					<div style="flex:2"><strong>Sản phẩm</strong></div>
-					<div style="flex:1"><strong>Đơn giá</strong></div>
-					<div style="flex:1"><strong>Số lượng</strong></div>
-					<div style="flex:1"><strong>Thành tiền</strong></div>
-				</div>
+            <div class="box-element">
+                <div class="cart-row">
+                    <div style="flex:0.5"><strong>Chọn</strong></div>
+                    <div style="flex:2"></div>
+                    <div style="flex:2"><strong>Sản phẩm</strong></div>
+                    <div style="flex:1"><strong>Đơn giá</strong></div>
+                    <div style="flex:1"><strong>Số lượng</strong></div>
+                    <div style="flex:1"><strong>Thành tiền</strong></div>
+                </div>
 
-				{% for item in items %}
-				<div class="cart-row">
-					<div style="flex:0.5">
-						<input type="checkbox" name="selected_items" value="{{ item.id }}">
-					</div>
-					<div style="flex:2">
-						<img class="row-image" src="{{ item.product.ImageURL }}">
-					</div>
-					<div style="flex:2"><p>{{ item.product.name }}</p></div>
-					<div style="flex:1"><p>{{ item.product.price|currency }}</p></div>
-					<div style="flex:1">
-						<p class="quantity">{{ item.quantity }}</p>
-						<div class="quantity">
-							<img data-product="{{ item.product.id }}" data-action='add' class="chg-quantity update-cart" src="{% static 'app/images/arrow-up.png' %}">
-							<img data-product="{{ item.product.id }}" data-action='remove' class="chg-quantity update-cart" src="{% static 'app/images/arrow-down.png' %}">
-						</div>
-					</div>
-					<div style="flex:1"><p>{{ item.get_total|currency }}</p></div>
-				</div>
-				{% endfor %}
-			</div>
-		</form>
-	</div>
+                {% for item in items %}
+                <div class="cart-row cart-item" data-quantity="{{ item.quantity }}" data-price="{{ item.get_total }}">
+                    <div style="flex:0.5">
+                        <input type="checkbox" name="selected_items" value="{{ item.id }}" class="select-item">
+                    </div>
+                    <div style="flex:2">
+                        <img class="row-image" src="{{ item.product.ImageURL }}">
+                    </div>
+                    <div style="flex:2"><p>{{ item.product.name }}</p></div>
+                    <div style="flex:1"><p>{{ item.product.price|currency }}</p></div>
+                    <div style="flex:1">
+                        <p class="quantity-section d-none">{{ item.quantity }}</p>
+                        <div class="quantity"></div>  <!-- Đã bỏ mũi tên tăng/giảm -->
+                    </div>
+                    <div style="flex:1">
+                        <p class="price-section d-none">{{ item.get_total|currency }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const checkboxes = document.querySelectorAll(".select-item");
+    const totalQtyEl = document.getElementById("total-quantity");
+    const totalPriceEl = document.getElementById("total-price");
+
+    function updateTotal() {
+        let totalQty = 0;
+        let totalPrice = 0;
+
+        document.querySelectorAll(".cart-item").forEach((row) => {
+            const checkbox = row.querySelector(".select-item");
+            const qty = parseInt(row.dataset.quantity);
+            const price = parseFloat(row.dataset.price);
+
+            const qtyEl = row.querySelector(".quantity-section");
+            const priceEl = row.querySelector(".price-section");
+
+            if (checkbox.checked) {
+                qtyEl.classList.remove("d-none");
+                priceEl.classList.remove("d-none");
+                totalQty += qty;
+                totalPrice += price;
+            } else {
+                qtyEl.classList.add("d-none");
+                priceEl.classList.add("d-none");
+            }
+        });
+
+        totalQtyEl.textContent = totalQty;
+        totalPriceEl.textContent = new Intl.NumberFormat('vi-VN').format(totalPrice) + " VND";
+    }
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", updateTotal);
+    });
+
+    updateTotal(); // Cập nhật lần đầu
+});
+</script>
+
 {% endblock cart_content %}
