@@ -346,12 +346,14 @@ def create_order_view(request):
     except Order.DoesNotExist:
         return render(request, 'payments/create_order.html', {'message': 'Giỏ hàng trống!'})
 
+    payment_method = request.GET.get('method')  # Lấy phương thức từ URL
+
     if request.method == "POST":
         selected_ids = request.POST.getlist('selected_items')
         items = order.orderitem_set.filter(id__in=selected_ids)
 
         if not items.exists():
-            return render(request, 'payments/create_order.html', {
+            return render(request, f'payments/create_order_{payment_method or "cod"}.html', {
                 'message': 'Bạn chưa chọn sản phẩm nào!',
                 'items': order.orderitem_set.all(),
                 'order': order,
@@ -360,25 +362,27 @@ def create_order_view(request):
 
         total = sum(item.get_total for item in items)
 
-        payment_method = request.POST.get('payment_method')
-
-        # Đánh dấu đơn hàng là hoàn tất
+        # Hoàn tất đơn hàng
         order.complete = True
         order.save()
 
-        # Tạo thông tin thanh toán
+        # Tạo thanh toán
         payment = Payment.objects.create(
             order=order,
             amount=total
         )
 
-        # Lưu lại những item đã chọn bằng cách tạm thời giữ lại, xóa các item không chọn
+        # Xóa sản phẩm không chọn
         order.orderitem_set.exclude(id__in=selected_ids).delete()
+        payment = Payment.objects.create(order=order,amount=total)
 
+        # Điều hướng theo phương thức
         if payment_method == 'momo':
-            return redirect('payments:momo_create', order_id=order.id)
+            return redirect('payments:momo_create', payment_id=payment.id)
         elif payment_method == 'vnpay':
-            return redirect('payments:vnpay_create', order_id=order.id)
+            return redirect('payments:vnpay_create', payment_id=payment.id)
+        elif payment_method == 'cod':
+            return redirect('payments:cod_payment')
         else:
             return render(request, 'payments/create_order.html', {
                 'message': 'Phương thức thanh toán không hợp lệ!',
@@ -388,11 +392,19 @@ def create_order_view(request):
             })
 
     else:
-        # GET: hiển thị tất cả sản phẩm trong giỏ để người dùng chọn
+        # GET: hiển thị tất cả sản phẩm trong giỏ
         items = order.orderitem_set.all()
         total = sum(item.get_total for item in items)
 
-    return render(request, 'payments/create_order.html', {
+        # Chọn template tương ứng
+        if payment_method == 'momo':
+            template = 'payments/create_order_momo.html'
+        elif payment_method == 'vnpay':
+            template = 'payments/create_order_vnpay.html'
+        else:
+            template = 'payments/create_order.html'
+
+    return render(request, template, {
         'order': order,
         'items': items,
         'total': total
@@ -407,8 +419,8 @@ import qrcode
 from io import BytesIO
 import base64
 
-def momo_create_payment(request, order_id):
-    payment = get_object_or_404(Payment, order_id=order_id)
+def momo_create_payment(request, payment_id):
+    payment = get_object_or_404(Payment, id=payment_id)
     request_id = str(uuid.uuid4())
     unique_order_id = f"{payment.order_id}_{int(time.time())}"
 
@@ -533,12 +545,21 @@ def cod_payment_view(request):
     try:
         order = Order.objects.get(customer=user, complete=False)
     except Order.DoesNotExist:
-        return render(request, "payments/create_order.html", {"message": "Không tìm thấy đơn hàng!"})
+        return render(request, "payments/create_order.html", {
+            "message": "Không tìm thấy đơn hàng!",
+            "order": None,
+            "total": 0
+        })
 
     if order.orderitem_set.count() == 0:
-        return render(request, "payments/create_order.html", {"message": "Giỏ hàng trống!"})
+        return render(request, "payments/create_order.html", {
+            "message": "Giỏ hàng trống!",
+            "order": None,
+            "total": 0
+        })
 
-    total = order.get_cart_total()
+    # Lấy tổng tiền (vì get_cart_total là property nên không dùng ())
+    total = order.get_cart_total
 
     if request.method == "POST":
         # Hoàn tất đơn hàng và tạo payment
@@ -554,7 +575,12 @@ def cod_payment_view(request):
 
         return render(request, "payments/success_cod.html", {"order": order})
 
-    return render(request, "payments/confirm_cod.html", {"order": order, "total": total})
+    # Nếu chưa POST, hiển thị thông tin thanh toán trên create_order.html
+    return render(request, "payments/create_order.html", {
+        "order": order,
+        "total": total
+    })
+
 
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -569,7 +595,7 @@ def vnpay_create_payment(request, order_id):
     # order = get_object_or_404(Order, id=order_id, customer=request.user, complete=False)
     order = get_object_or_404(Order, id=order_id, customer=request.user)
     if order.orderitem_set.count() == 0:
-        return render(request, "payments/create_order.html", {"message": "Giỏ hàng trống!"})
+        return render(request, "payments/create_order_vnpay.html", {"message": "Giỏ hàng trống!"})
 
     total = int(order.get_cart_total)  # VNPay yêu cầu số nguyên
 

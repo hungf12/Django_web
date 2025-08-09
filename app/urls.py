@@ -23,11 +23,11 @@ urlpatterns = [
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),
 
     path("create/", views.create_order_view, name="create_order"),
-    path("momo/create/<str:order_id>/", views.momo_create_payment, name="momo_create"),
+    path("momo/create/<int:payment_id>/", views.momo_create_payment, name="momo_create"),
     path("notify/", views.momo_notify_view, name="momo_notify"),
     path("payment/cod/", views.cod_payment_view, name="cod_payment"),
   # urls.py
-    path("vnpay/create/<int:order_id>/", views.vnpay_create_payment, name="vnpay_create"),
+    path("vnpay/create/<int:payment_id>/", views.vnpay_create_payment, name="vnpay_create"),
     path("vnpay/return/", views.vnpay_return_view, name="vnpay_return"),
 
 ]

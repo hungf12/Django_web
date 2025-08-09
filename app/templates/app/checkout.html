@@ -6,21 +6,28 @@
 <div class="container my-5">
     <div class="row">
         <!-- Cột chọn phương thức thanh toán -->
+<!-- Cột chọn phương thức thanh toán -->
         <div class="col-lg-6 mb-4">
             <div class="card shadow-sm p-4 h-100">
                 <h4 class="mb-4 text-primary">Chọn phương thức thanh toán</h4>
                 
                 <div class="d-grid gap-3">
-                    <a class="btn btn-success btn-lg" href="{% url 'create_order' %}">
+                    <!-- MoMo -->
+                    <a class="btn btn-success btn-lg" href="{% url 'payments:create_order' %}?method=momo">
                         <i class="bi bi-wallet2 me-2"></i> Thanh toán qua MoMo
                     </a>
-                    <a class="btn btn-success btn-lg" href="{% url 'cod_payment' %}">
-                        <i class="bi bi-wallet2 me-2"></i> Thanh toán qua tiền mặt
+
+                    <!-- Tiền mặt COD -->
+                    <a class="btn btn-success btn-lg" href="{% url 'payments:cod_payment' %}">
+                        <i class="bi bi-cash-coin me-2"></i> Thanh toán qua tiền mặt
                     </a>
-                    <a class="btn btn-success btn-lg" href="{% url 'create_order'%}">
+
+                    <!-- VNPay -->
+                    <a class="btn btn-success btn-lg" href="{% url 'payments:create_order' %}?method=vnpay">
                         <i class="bi bi-wallet2 me-2"></i> Thanh toán qua VNPay
                     </a>
                 </div>
+
                 <div class="mt-4">
                     <a class="btn btn-outline-dark" href="{% url 'cart' %}">
                         <i class="bi bi-cart me-2"></i> Quay lại giỏ hàng
@@ -28,6 +35,7 @@
                 </div>
             </div>
         </div>
+
 
         <!-- Cột hiển thị sản phẩm đã mua -->
         <div class="col-lg-6">

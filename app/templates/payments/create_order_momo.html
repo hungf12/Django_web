@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Xác nhận thanh toán COD</title>
+    <title>Xác nhận thanh toán MoMo</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -20,6 +20,7 @@
         h2 {
             color: #2c3e50;
             text-align: center;
+            margin-bottom: 20px;
         }
         table {
             width: 100%;
@@ -35,6 +36,12 @@
             background-color: #f0f2f5;
             font-weight: 600;
         }
+        tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
         td img {
             max-height: 60px;
             border-radius: 8px;
@@ -43,6 +50,7 @@
             text-align: right;
             font-size: 18px;
             margin-top: 20px;
+            font-weight: bold;
         }
         .message {
             color: red;
@@ -65,54 +73,42 @@
             transition: background 0.3s ease;
         }
         .btn-pay:hover {
-            background-color: #219150;
+            background-color: #ad1457;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Thanh toán khi nhận hàng (COD)</h2>
+        <h2>Thanh toán qua MoMo</h2>
 
-        {% if message %}
-            <p class="message">{{ message }}</p>
-        {% endif %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Tổng</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.product.price|floatformat:0 }} đ</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.get_total|floatformat:0 }} đ</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-        {% if order %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Sản phẩm</th>
-                        <th>Giá</th>
-                        <th>Số lượng</th>
-                        <th>Tổng</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in order.orderitem_set.all %}
-                    <tr>
-                        <td>{{ item.product.name }}</td>
-                        <td>{{ item.product.price|floatformat:0 }} đ</td>
-                        <td>{{ item.quantity }}</td>
-                        <td>{{ item.get_total|floatformat:0 }} đ</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="total">
+            Tổng cộng: {{ total|floatformat:0 }} VNĐ
+        </div>
 
-            <div class="total">
-                <p><strong>Tổng cộng: {{ total|floatformat:0 }} VNĐ</strong></p>
-            </div>
-
-            {% if not order.complete %}
-            <form method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn-pay">Xác nhận thanh toán COD</button>
-            </form>
-            {% endif %}
-
-        {% else %}
-            <p class="message">Không có đơn hàng nào để hiển thị.</p>
-        {% endif %}
+        <form action="{% url 'payments:momo_create' order.id %}" method="get">
+            <button type="submit" class="btn-pay">Lấy mã thanh toán MoMo</button>
+        </form>
     </div>
 </body>
 </html>
